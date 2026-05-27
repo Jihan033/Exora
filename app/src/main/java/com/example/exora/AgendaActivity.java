@@ -59,10 +59,23 @@ public class AgendaActivity extends AppCompatActivity {
             finish();
         });
 
-        // PROFILE
+        // Profile
         btnProfile.setOnClickListener(v -> {
 
-            // nanti ke ProfileActivity
+            Intent intent =
+                    new Intent(
+                            AgendaActivity.this,
+                            ProfileActivity.class
+                    );
+
+            startActivity(intent);
+
+            overridePendingTransition(
+                    R.transition.slide_in_right,
+                    R.transition.slide_out_left
+            );
+
+            finish();
         });
 
         // AGENDA

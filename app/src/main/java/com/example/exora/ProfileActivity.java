@@ -6,14 +6,17 @@ import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class ClubActivity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity {
 
-    LinearLayout btnDashboard, btnAgenda, btnClub, btnProfile;
+    LinearLayout btnDashboard,
+            btnAgenda,
+            btnClub,
+            btnProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_club);
+        setContentView(R.layout.activity_profile);
 
         btnDashboard = findViewById(R.id.btnDashboard);
         btnAgenda = findViewById(R.id.btnAgenda);
@@ -22,24 +25,10 @@ public class ClubActivity extends AppCompatActivity {
 
         // Dashboard
         btnDashboard.setOnClickListener(v -> {
-            Intent intent = new Intent(
-                    ClubActivity.this,
+            startActivity(new Intent(
+                    ProfileActivity.this,
                     DashboardActivity.class
-            );
-            startActivity(intent);
-            finish();
-        });
-
-        // Agenda
-        btnAgenda.setOnClickListener(v -> {
-
-            Intent intent =
-                    new Intent(
-                            ClubActivity.this,
-                            AgendaActivity.class
-                    );
-
-            startActivity(intent);
+            ));
 
             overridePendingTransition(
                     R.transition.slide_in_left,
@@ -49,28 +38,38 @@ public class ClubActivity extends AppCompatActivity {
             finish();
         });
 
-        // Profile
-        btnProfile.setOnClickListener(v -> {
-
-            Intent intent =
-                    new Intent(
-                            ClubActivity.this,
-                            ProfileActivity.class
-                    );
-
-            startActivity(intent);
+        // Agenda
+        btnAgenda.setOnClickListener(v -> {
+            startActivity(new Intent(
+                    ProfileActivity.this,
+                    AgendaActivity.class
+            ));
 
             overridePendingTransition(
-                    R.transition.slide_in_right,
-                    R.transition.slide_out_left
+                    R.transition.slide_in_left,
+                    R.transition.slide_out_right
             );
 
             finish();
         });
 
-        // Club (current page)
+        // Clubs
         btnClub.setOnClickListener(v -> {
-            // stay here
+            startActivity(new Intent(
+                    ProfileActivity.this,
+                    ClubActivity.class
+            ));
+
+            overridePendingTransition(
+                    R.transition.slide_in_left,
+                    R.transition.slide_out_right
+            );
+
+            finish();
+        });
+
+        // Profile (stay here)
+        btnProfile.setOnClickListener(v -> {
         });
     }
 }

@@ -74,9 +74,20 @@ public class DashboardActivity extends AppCompatActivity {
             );
         });
 
-        btnProfile.setOnClickListener(v ->
-                Toast.makeText(this,
-                        "Profile",
-                        Toast.LENGTH_SHORT).show());
+        btnProfile.setOnClickListener(v -> {
+
+            Intent intent =
+                    new Intent(
+                            DashboardActivity.this,
+                            ProfileActivity.class
+                    );
+
+            startActivity(intent);
+
+            overridePendingTransition(
+                    R.transition.slide_in_right,
+                    R.transition.slide_out_left
+            );
+        });
     }
 }
