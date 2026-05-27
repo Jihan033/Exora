@@ -32,11 +32,20 @@ public class ClubActivity extends AppCompatActivity {
 
         // Agenda
         btnAgenda.setOnClickListener(v -> {
-            Intent intent = new Intent(
-                    ClubActivity.this,
-                    AgendaActivity.class
-            );
+
+            Intent intent =
+                    new Intent(
+                            ClubActivity.this,
+                            AgendaActivity.class
+                    );
+
             startActivity(intent);
+
+            overridePendingTransition(
+                    R.transition.slide_in_left,
+                    R.transition.slide_out_right
+            );
+
             finish();
         });
 

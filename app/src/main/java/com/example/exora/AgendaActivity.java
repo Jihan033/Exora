@@ -52,8 +52,8 @@ public class AgendaActivity extends AppCompatActivity {
             startActivity(intent);
 
             overridePendingTransition(
-                    R.transition.slide_in_left,
-                    R.transition.slide_out_right
+                    R.transition.slide_in_right,
+                    R.transition.slide_out_left
             );
 
             finish();
