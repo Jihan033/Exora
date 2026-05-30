@@ -485,7 +485,7 @@
                     <ImageView
                         android:layout_width="22dp"
                         android:layout_height="22dp"
-                        android:src="@drawable/ic_dashboard" />
+                        android:src="@android:drawable/ic_menu_view" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -507,7 +507,7 @@
                     <ImageView
                         android:layout_width="22dp"
                         android:layout_height="22dp"
-                        android:src="@drawable/ic_agenda" />
+                        android:src="@android:drawable/ic_menu_my_calendar" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -529,7 +529,7 @@
                     <ImageView
                         android:layout_width="22dp"
                         android:layout_height="22dp"
-                        android:src="@drawable/ic_club" />
+                        android:src="@android:drawable/ic_menu_share" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -552,7 +552,7 @@
                     <ImageView
                         android:layout_width="22dp"
                         android:layout_height="22dp"
-                        android:src="@drawable/ic_profile"
+                        android:src="@android:drawable/ic_menu_myplaces"
                         app:tint="#FFFFFF"/>
 
                     <TextView
