@@ -1,5 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+
+    <color name="primaryBlue">#2563EB</color>
+    <color name="backgroundColor">#F5F7FA</color>
+
+    <color name="darkText">#1E293B</color>
+    <color name="grayText">#64748B</color>
+
+    <color name="greenBadge">#BBF7D0</color>
+    <color name="greenText">#15803D</color>
+
+    <color name="lightBlue">#DBEAFE</color>
+
+    <color name="cardWhite">#FFFFFF</color>
+
 </resources>
