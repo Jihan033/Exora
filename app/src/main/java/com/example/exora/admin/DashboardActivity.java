@@ -1,4 +1,4 @@
-package com.example.exora;
+package com.example.exora.admin;
 
 import android.os.Bundle;
 import android.widget.LinearLayout;
@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.exora.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class DashboardActivity extends AppCompatActivity {
