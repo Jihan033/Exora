@@ -17,7 +17,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class ManageRecruitmentActivity extends AppCompatActivity {
+public class AdminManageRecruitmentActivity extends AppCompatActivity {
 
     private RadioGroup rgStatus;
     private RadioButton rbOpen, rbClosed;
@@ -28,7 +28,7 @@ public class ManageRecruitmentActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_manage_recruitment);
+        setContentView(R.layout.activity_admin_manage_recruitment);
 
         dbHelper = new DatabaseHelper(this);
 

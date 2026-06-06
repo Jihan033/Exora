@@ -88,7 +88,7 @@ public class LoginActivity extends AppCompatActivity {
             // PINDAH KE DASHBOARD
             Intent intent = new Intent(
                     LoginActivity.this,
-                    DashboardActivity.class
+                    AdminDashboardActivity.class
             );
 
             startActivity(intent);

@@ -7,14 +7,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import com.example.exora.R;
 
-public class ClubActivity extends AppCompatActivity {
+public class AdminClubActivity extends AppCompatActivity {
 
     private LinearLayout btnDashboard, btnAgenda, btnClub, btnProfile;
     private CardView btnManageMembers, btnRecruitment;
@@ -25,7 +24,7 @@ public class ClubActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_club);
+        setContentView(R.layout.activity_admin_club);
 
         dbHelper = new DatabaseHelper(this);
 
@@ -42,13 +41,13 @@ public class ClubActivity extends AppCompatActivity {
         setupNavigation();
 
         btnManageMembers.setOnClickListener(v -> {
-            Intent intent = new Intent(ClubActivity.this, ManageMemberActivity.class);
+            Intent intent = new Intent(AdminClubActivity.this, AdminManageMemberActivity.class);
             startActivity(intent);
             overridePendingTransition(R.transition.slide_in_right, R.transition.slide_out_left);
         });
 
         btnRecruitment.setOnClickListener(v -> {
-            Intent intent = new Intent(ClubActivity.this, RecruitmentActivity.class);
+            Intent intent = new Intent(AdminClubActivity.this, AdminRecruitmentActivity.class);
             startActivity(intent);
             overridePendingTransition(R.transition.slide_in_right, R.transition.slide_out_left);
         });
@@ -73,7 +72,7 @@ public class ClubActivity extends AppCompatActivity {
                 String role = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_MEM_ROLE));
                 String type = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_MEM_TYPE));
 
-                View itemView = inflater.inflate(R.layout.item_member_card, memberListContainer, false);
+                View itemView = inflater.inflate(R.layout.item_admin_member_card, memberListContainer, false);
 
                 TextView tvName = itemView.findViewById(R.id.tvMemberName);
                 TextView tvRole = itemView.findViewById(R.id.tvMemberRole);
@@ -97,19 +96,19 @@ public class ClubActivity extends AppCompatActivity {
 
     private void setupNavigation() {
         btnDashboard.setOnClickListener(v -> {
-            startActivity(new Intent(ClubActivity.this, DashboardActivity.class));
+            startActivity(new Intent(AdminClubActivity.this, AdminDashboardActivity.class));
             overridePendingTransition(R.transition.slide_in_left, R.transition.slide_out_right);
             finish();
         });
 
         btnAgenda.setOnClickListener(v -> {
-            startActivity(new Intent(ClubActivity.this, AgendaActivity.class));
+            startActivity(new Intent(AdminClubActivity.this, AdminAgendaActivity.class));
             overridePendingTransition(R.transition.slide_in_left, R.transition.slide_out_right);
             finish();
         });
 
         btnProfile.setOnClickListener(v -> {
-            startActivity(new Intent(ClubActivity.this, ProfileActivity.class));
+            startActivity(new Intent(AdminClubActivity.this, AdminProfileActivity.class));
             overridePendingTransition(R.transition.slide_in_right, R.transition.slide_out_left);
             finish();
         });

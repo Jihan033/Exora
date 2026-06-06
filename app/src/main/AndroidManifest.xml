@@ -13,34 +13,34 @@
         android:theme="@style/Theme.Exora">
 
         <activity
-            android:name=".admin.PrivacyProfileActivity"
+            android:name=".admin.AdminPrivacyProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".admin.ManageMemberActivity"
+            android:name=".admin.AdminManageMemberActivity"
             android:exported="false" />
         <activity
-            android:name=".admin.ManageRecruitmentActivity"
+            android:name=".admin.AdminManageRecruitmentActivity"
             android:exported="false" />
         <activity
-            android:name=".admin.RecruitmentActivity"
+            android:name=".admin.AdminRecruitmentActivity"
             android:exported="false" />
         <activity
             android:name=".admin.CreateEventActivity"
             android:exported="false" />
         <activity
-            android:name=".admin.ManageEventActivity"
+            android:name=".admin.AdminManageEventActivity"
             android:exported="false" />
         <activity
-            android:name=".admin.ProfileActivity"
+            android:name=".admin.AdminProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".admin.ClubActivity"
+            android:name=".admin.AdminClubActivity"
             android:exported="false" />
         <activity
-            android:name=".admin.AgendaActivity"
+            android:name=".admin.AdminAgendaActivity"
             android:exported="false" />
         <activity
-            android:name=".admin.DashboardActivity"
+            android:name=".admin.AdminDashboardActivity"
             android:exported="false" />
         <activity
             android:name=".admin.LoginActivity"

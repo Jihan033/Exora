@@ -14,7 +14,7 @@ import com.example.exora.R;
 
 import java.util.List;
 
-public class AgendaActivity extends AppCompatActivity {
+public class AdminAgendaActivity extends AppCompatActivity {
 
     private LinearLayout btnDashboard, btnAgenda, btnClub, btnProfile;
     private LinearLayout eventListContainer;
@@ -24,7 +24,7 @@ public class AgendaActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_agenda);
+        setContentView(R.layout.activity_admin_agenda);
 
         dbHelper = new DatabaseHelper(this);
 
@@ -42,7 +42,7 @@ public class AgendaActivity extends AppCompatActivity {
 
         btnCreateEntry.setOnClickListener(v -> {
             // Berpindah ke CreateEventActivity untuk membuat entri baru
-            Intent intent = new Intent(AgendaActivity.this, CreateEventActivity.class);
+            Intent intent = new Intent(AdminAgendaActivity.this, CreateEventActivity.class);
             startActivity(intent);
             overridePendingTransition(R.transition.slide_in_right, R.transition.slide_out_left);
         });
@@ -63,7 +63,7 @@ public class AgendaActivity extends AppCompatActivity {
         LayoutInflater inflater = LayoutInflater.from(this);
 
         for (final EventModel event : events) {
-            View cardView = inflater.inflate(R.layout.item_event_card, eventListContainer, false);
+            View cardView = inflater.inflate(R.layout.item_admin_event_card, eventListContainer, false);
 
             TextView tvTime = cardView.findViewById(R.id.tvTimeRange);
             TextView tvName = cardView.findViewById(R.id.tvEventName);
@@ -77,7 +77,7 @@ public class AgendaActivity extends AppCompatActivity {
             tvStatus.setText(event.getStatus());
 
             btnManage.setOnClickListener(v -> {
-                Intent intent = new Intent(AgendaActivity.this, ManageEventActivity.class);
+                Intent intent = new Intent(AdminAgendaActivity.this, AdminManageEventActivity.class);
                 intent.putExtra("EVENT_ID", event.getId());
                 startActivity(intent);
                 overridePendingTransition(R.transition.slide_in_right, R.transition.slide_out_left);
@@ -89,19 +89,19 @@ public class AgendaActivity extends AppCompatActivity {
 
     private void setupNavigation() {
         btnDashboard.setOnClickListener(v -> {
-            startActivity(new Intent(AgendaActivity.this, DashboardActivity.class));
+            startActivity(new Intent(AdminAgendaActivity.this, AdminDashboardActivity.class));
             overridePendingTransition(R.transition.slide_in_left, R.transition.slide_out_right);
             finish();
         });
 
         btnClub.setOnClickListener(v -> {
-            startActivity(new Intent(AgendaActivity.this, ClubActivity.class));
+            startActivity(new Intent(AdminAgendaActivity.this, AdminClubActivity.class));
             overridePendingTransition(R.transition.slide_in_right, R.transition.slide_out_left);
             finish();
         });
 
         btnProfile.setOnClickListener(v -> {
-            startActivity(new Intent(AgendaActivity.this, ProfileActivity.class));
+            startActivity(new Intent(AdminAgendaActivity.this, AdminProfileActivity.class));
             overridePendingTransition(R.transition.slide_in_right, R.transition.slide_out_left);
             finish();
         });

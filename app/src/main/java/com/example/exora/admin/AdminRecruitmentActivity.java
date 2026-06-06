@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,10 +15,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.example.exora.R;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class RecruitmentActivity extends AppCompatActivity {
+public class AdminRecruitmentActivity extends AppCompatActivity {
 
     private TextView tvStatusBadge, tvDeadline, tvApplicantCount, tvShortlistedCount;
     private LinearLayout applicantListContainer;
@@ -29,7 +25,7 @@ public class RecruitmentActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recruitment);
+        setContentView(R.layout.activity_admin_recruitment);
 
         dbHelper = new DatabaseHelper(this);
 
@@ -49,7 +45,7 @@ public class RecruitmentActivity extends AppCompatActivity {
         btnManageRecruitment = findViewById(R.id.btnManageRecruitment);
 
         btnManageRecruitment.setOnClickListener(v -> {
-            Intent intent = new Intent(RecruitmentActivity.this, ManageRecruitmentActivity.class);
+            Intent intent = new Intent(AdminRecruitmentActivity.this, AdminManageRecruitmentActivity.class);
             startActivity(intent);
         });
     }
@@ -95,7 +91,7 @@ public class RecruitmentActivity extends AppCompatActivity {
                 String name = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_APP_NAME));
                 String dept = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_APP_DEPT));
 
-                View itemView = inflater.inflate(R.layout.item_applicant_card, applicantListContainer, false);
+                View itemView = inflater.inflate(R.layout.item_admin_applicant_card, applicantListContainer, false);
 
                 TextView tvName = itemView.findViewById(R.id.tvApplicantName);
                 TextView tvDept = itemView.findViewById(R.id.tvApplicantDept);

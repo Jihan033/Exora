@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.exora.R;
 
-public class ProfileActivity extends AppCompatActivity {
+public class AdminProfileActivity extends AppCompatActivity {
 
     LinearLayout btnDashboard,
             btnAgenda,
@@ -19,7 +19,7 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+        setContentView(R.layout.activity_admin_profile);
 
         btnDashboard = findViewById(R.id.btnDashboard);
         btnAgenda = findViewById(R.id.btnAgenda);
@@ -30,8 +30,8 @@ public class ProfileActivity extends AppCompatActivity {
         // Dashboard
         btnDashboard.setOnClickListener(v -> {
             startActivity(new Intent(
-                    ProfileActivity.this,
-                    DashboardActivity.class
+                    AdminProfileActivity.this,
+                    AdminDashboardActivity.class
             ));
 
             overridePendingTransition(
@@ -45,8 +45,8 @@ public class ProfileActivity extends AppCompatActivity {
         // Agenda
         btnAgenda.setOnClickListener(v -> {
             startActivity(new Intent(
-                    ProfileActivity.this,
-                    AgendaActivity.class
+                    AdminProfileActivity.this,
+                    AdminAgendaActivity.class
             ));
 
             overridePendingTransition(
@@ -60,8 +60,8 @@ public class ProfileActivity extends AppCompatActivity {
         // Clubs
         btnClub.setOnClickListener(v -> {
             startActivity(new Intent(
-                    ProfileActivity.this,
-                    ClubActivity.class
+                    AdminProfileActivity.this,
+                    AdminClubActivity.class
             ));
 
             overridePendingTransition(
@@ -79,8 +79,8 @@ public class ProfileActivity extends AppCompatActivity {
         // Privacy Profile
         btnPrivacyProfile.setOnClickListener(v -> {
             startActivity(new Intent(
-                    ProfileActivity.this,
-                    PrivacyProfileActivity.class
+                    AdminProfileActivity.this,
+                    AdminPrivacyProfileActivity.class
             ));
 
             overridePendingTransition(

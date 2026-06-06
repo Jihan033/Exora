@@ -3,7 +3,6 @@ package com.example.exora.admin;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -16,7 +15,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class ManageEventActivity extends AppCompatActivity {
+public class AdminManageEventActivity extends AppCompatActivity {
 
     private TextInputEditText etName, etDate, etTime, etLocation, etDescription;
     private Button btnSave, btnDelete;
@@ -26,7 +25,7 @@ public class ManageEventActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_manage_event);
+        setContentView(R.layout.activity_admin_manage_event);
 
         dbHelper = new DatabaseHelper(this);
 

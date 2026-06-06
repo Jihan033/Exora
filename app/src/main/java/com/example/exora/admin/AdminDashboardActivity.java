@@ -14,7 +14,7 @@ import com.example.exora.R;
 
 import java.util.List;
 
-public class DashboardActivity extends AppCompatActivity {
+public class AdminDashboardActivity extends AppCompatActivity {
 
     private LinearLayout btnDashboard, btnAgenda, btnClub, btnProfile;
     private TextView btnViewCalendar;
@@ -25,7 +25,7 @@ public class DashboardActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dashboard);
+        setContentView(R.layout.activity_admin_dashboard);
 
         dbHelper = new DatabaseHelper(this);
 
@@ -64,7 +64,7 @@ public class DashboardActivity extends AppCompatActivity {
 
         for (EventModel event : events) {
             if (!event.getStatus().equalsIgnoreCase("Closed")) {
-                View cardView = inflater.inflate(R.layout.item_dashboard_event, dashEventContainer, false);
+                View cardView = inflater.inflate(R.layout.item_admin_dashboard_event, dashEventContainer, false);
                 ((TextView) cardView.findViewById(R.id.tvDashTime)).setText(event.getTime());
                 ((TextView) cardView.findViewById(R.id.tvDashName)).setText(event.getName());
                 ((TextView) cardView.findViewById(R.id.tvDashLocation)).setText(event.getLocation());
@@ -81,7 +81,7 @@ public class DashboardActivity extends AppCompatActivity {
         LayoutInflater inflater = LayoutInflater.from(this);
 
         for (EventModel event : events) {
-            View cardView = inflater.inflate(R.layout.item_event_card, allAgendasContainer, false);
+            View cardView = inflater.inflate(R.layout.item_admin_event_card, allAgendasContainer, false);
             
             // Sembunyikan tombol manage agar dashboard tetap bersih, atau biarkan jika ingin akses cepat
             cardView.findViewById(R.id.btnManage).setOnClickListener(v -> openManageEvent(event.getId()));
@@ -132,7 +132,7 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     private void openManageEvent(int eventId) {
-        Intent intent = new Intent(this, ManageEventActivity.class);
+        Intent intent = new Intent(this, AdminManageEventActivity.class);
         intent.putExtra("EVENT_ID", eventId);
         startActivity(intent);
         overridePendingTransition(R.transition.slide_in_right, R.transition.slide_out_left);
@@ -142,22 +142,22 @@ public class DashboardActivity extends AppCompatActivity {
         btnDashboard.setOnClickListener(v -> Toast.makeText(this, "Dashboard", Toast.LENGTH_SHORT).show());
 
         btnAgenda.setOnClickListener(v -> {
-            startActivity(new Intent(this, AgendaActivity.class));
+            startActivity(new Intent(this, AdminAgendaActivity.class));
             overridePendingTransition(R.transition.slide_in_right, R.transition.slide_out_left);
         });
 
         btnClub.setOnClickListener(v -> {
-            startActivity(new Intent(this, ClubActivity.class));
+            startActivity(new Intent(this, AdminClubActivity.class));
             overridePendingTransition(R.transition.slide_in_right, R.transition.slide_out_left);
         });
 
         btnProfile.setOnClickListener(v -> {
-            startActivity(new Intent(this, ProfileActivity.class));
+            startActivity(new Intent(this, AdminProfileActivity.class));
             overridePendingTransition(R.transition.slide_in_right, R.transition.slide_out_left);
         });
 
         btnViewCalendar.setOnClickListener(v -> {
-            startActivity(new Intent(this, AgendaActivity.class));
+            startActivity(new Intent(this, AdminAgendaActivity.class));
             overridePendingTransition(R.transition.slide_in_right, R.transition.slide_out_left);
         });
     }

@@ -13,7 +13,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.example.exora.R;
 
-public class ManageMemberActivity extends AppCompatActivity {
+public class AdminManageMemberActivity extends AppCompatActivity {
 
     private LinearLayout memberListContainer;
     private DatabaseHelper dbHelper;
@@ -21,7 +21,7 @@ public class ManageMemberActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_manage_member);
+        setContentView(R.layout.activity_admin_manage_member);
 
         dbHelper = new DatabaseHelper(this);
 
@@ -49,7 +49,7 @@ public class ManageMemberActivity extends AppCompatActivity {
                 String role = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_MEM_ROLE));
                 String type = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_MEM_TYPE));
 
-                View itemView = inflater.inflate(R.layout.item_member_card, memberListContainer, false);
+                View itemView = inflater.inflate(R.layout.item_admin_member_card, memberListContainer, false);
 
                 TextView tvName = itemView.findViewById(R.id.tvMemberName);
                 TextView tvRole = itemView.findViewById(R.id.tvMemberRole);
