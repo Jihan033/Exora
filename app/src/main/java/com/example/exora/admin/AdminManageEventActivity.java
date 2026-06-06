@@ -2,8 +2,13 @@ package com.example.exora.admin;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +26,8 @@ public class AdminManageEventActivity extends AppCompatActivity {
 
     private TextInputEditText etName, etDate, etTime, etLocation, etDescription;
     private Button btnSave, btnDelete;
+    private LinearLayout participantsContainer;
+    private TextView tvAttendanceTitle, tvNoParticipants;
     private DatabaseHelper dbHelper;
     private int eventId = -1;
 
@@ -45,8 +52,12 @@ public class AdminManageEventActivity extends AppCompatActivity {
         etDescription = findViewById(R.id.etEventDescription);
         btnSave = findViewById(R.id.btnUpdateEvent);
         btnDelete = findViewById(R.id.btnCancelEvent);
+        
+        participantsContainer = findViewById(R.id.participantsContainer);
+        tvAttendanceTitle = findViewById(R.id.tvAttendanceTitle);
+        tvNoParticipants = findViewById(R.id.tvNoParticipants);
 
-        // Setup Pickers (Sama seperti di CreateEventActivity)
+        // Setup Pickers
         etDate.setFocusable(false);
         etDate.setOnClickListener(v -> showDatePickerDialog());
         etTime.setFocusable(false);
@@ -55,6 +66,7 @@ public class AdminManageEventActivity extends AppCompatActivity {
         if (getIntent().hasExtra("EVENT_ID")) {
             eventId = getIntent().getIntExtra("EVENT_ID", -1);
             loadEventData(eventId);
+            loadParticipants(eventId);
             btnDelete.setText("Delete Event");
         }
 
@@ -79,6 +91,32 @@ public class AdminManageEventActivity extends AppCompatActivity {
             etLocation.setText(event.getLocation());
             etDescription.setText(event.getDescription());
         }
+    }
+
+    private void loadParticipants(int id) {
+        participantsContainer.removeAllViews();
+        Cursor cursor = dbHelper.getEventParticipants(id);
+        
+        int count = 0;
+        if (cursor != null && cursor.moveToFirst()) {
+            tvNoParticipants.setVisibility(View.GONE);
+            do {
+                String name = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ATT_USER_NAME));
+                String status = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ATT_STATUS));
+                
+                View itemView = LayoutInflater.from(this).inflate(R.layout.item_event_participant, participantsContainer, false);
+                ((TextView) itemView.findViewById(R.id.tvParticipantName)).setText(name);
+                ((TextView) itemView.findViewById(R.id.tvParticipantStatus)).setText(status);
+                
+                participantsContainer.addView(itemView);
+                count++;
+            } while (cursor.moveToNext());
+            cursor.close();
+        } else {
+            tvNoParticipants.setVisibility(View.VISIBLE);
+        }
+        
+        tvAttendanceTitle.setText("Attendance Preview (" + count + " Students)");
     }
 
     private void showDatePickerDialog() {

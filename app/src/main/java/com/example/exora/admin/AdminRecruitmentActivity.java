@@ -83,6 +83,16 @@ public class AdminRecruitmentActivity extends AppCompatActivity {
 
     private void loadPendingApplicants() {
         applicantListContainer.removeAllViews();
+
+        // Get club name from recruitment config
+        String club = "General";
+        Cursor configCursor = dbHelper.getRecruitmentConfig();
+        if (configCursor != null && configCursor.moveToFirst()) {
+            club = configCursor.getString(configCursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_RC_CLUB));
+            configCursor.close();
+        }
+        final String clubName = club;
+
         Cursor cursor = dbHelper.getApplicantsByStatus("PENDING");
 
         if (cursor != null && cursor.moveToFirst()) {
@@ -106,8 +116,8 @@ public class AdminRecruitmentActivity extends AppCompatActivity {
                     // Update applicant status
                     dbHelper.updateApplicantStatus(id, "ACCEPTED");
                     
-                    // Automatically add to members table
-                    dbHelper.addMember(name, dept, "MEMBER");
+                    // Automatically add to members table with required 4 arguments
+                    dbHelper.addMember(name, dept, "MEMBER", clubName);
                     
                     Toast.makeText(this, name + " Accepted and added to members", Toast.LENGTH_SHORT).show();
                     loadRecruitmentData();

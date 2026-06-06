@@ -2,10 +2,12 @@ package com.example.exora.admin;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.exora.NotificationActivity;
 import com.example.exora.R;
 
 public class AdminProfileActivity extends AppCompatActivity {
@@ -15,6 +17,7 @@ public class AdminProfileActivity extends AppCompatActivity {
             btnClub,
             btnProfile,
             btnPrivacyProfile;
+    ImageView btnAdminNotification;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +29,7 @@ public class AdminProfileActivity extends AppCompatActivity {
         btnClub = findViewById(R.id.btnClub);
         btnProfile = findViewById(R.id.btnProfile);
         btnPrivacyProfile = findViewById(R.id.btnPrivacyProfile);
+        btnAdminNotification = findViewById(R.id.btnAdminNotification);
 
         // Dashboard
         btnDashboard.setOnClickListener(v -> {
@@ -88,5 +92,14 @@ public class AdminProfileActivity extends AppCompatActivity {
                     R.transition.slide_out_left
             );
         });
+
+        if (btnAdminNotification != null) {
+            btnAdminNotification.setOnClickListener(v -> {
+                Intent intent = new Intent(this, NotificationActivity.class);
+                intent.putExtra("TARGET_TYPE", "ADMIN");
+                startActivity(intent);
+                overridePendingTransition(R.transition.slide_in_right, R.transition.slide_out_left);
+            });
+        }
     }
 }

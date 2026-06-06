@@ -5,12 +5,14 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import com.example.exora.NotificationActivity;
 import com.example.exora.R;
 import com.example.exora.database.DatabaseHelper;
 
@@ -20,6 +22,7 @@ public class AdminClubActivity extends AppCompatActivity {
     private CardView btnManageMembers, btnRecruitment;
     private LinearLayout memberListContainer;
     private TextView tvTotalMembersCount;
+    private ImageView btnAdminNotification;
     private DatabaseHelper dbHelper;
 
     @Override
@@ -38,6 +41,7 @@ public class AdminClubActivity extends AppCompatActivity {
         btnRecruitment = findViewById(R.id.btnRecruitment);
         memberListContainer = findViewById(R.id.clubMemberListContainer);
         tvTotalMembersCount = findViewById(R.id.tvTotalMembersCount);
+        btnAdminNotification = findViewById(R.id.btnAdminNotification);
 
         setupNavigation();
 
@@ -52,6 +56,15 @@ public class AdminClubActivity extends AppCompatActivity {
             startActivity(intent);
             overridePendingTransition(R.transition.slide_in_right, R.transition.slide_out_left);
         });
+
+        if (btnAdminNotification != null) {
+            btnAdminNotification.setOnClickListener(v -> {
+                Intent intent = new Intent(this, NotificationActivity.class);
+                intent.putExtra("TARGET_TYPE", "ADMIN");
+                startActivity(intent);
+                overridePendingTransition(R.transition.slide_in_right, R.transition.slide_out_left);
+            });
+        }
     }
 
     @Override

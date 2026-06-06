@@ -37,11 +37,24 @@
             android:textSize="24sp"
             android:textStyle="bold" />
 
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/notification"
-            app:tint="#64748B" />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/btnAdminNotification"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/notification"
+                app:tint="#64748B" />
+            <View
+                android:id="@+id/adminNotifBadge"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:background="#DC2626"
+                android:layout_alignTop="@id/btnAdminNotification"
+                android:layout_alignEnd="@id/btnAdminNotification"
+                android:visibility="gone" />
+        </RelativeLayout>
 
     </LinearLayout>
 
@@ -74,7 +87,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="STUDENT MEMBER"
+                android:text="ADMIN PANEL"
                 android:textColor="#0058BE"
                 android:textSize="12sp"
                 android:textStyle="bold"/>
@@ -92,7 +105,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Check your organization schedules and updates below."
+                android:text="Manage your organization schedules and updates."
                 android:textColor="#64748B"
                 android:textSize="14sp"/>
 
@@ -139,7 +152,7 @@
                 </LinearLayout>
             </HorizontalScrollView>
 
-            <!-- ALL AGENDAS (Replaced My Organizations) -->
+            <!-- ALL AGENDAS -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -162,7 +175,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
-                android:text="Recent Activity"
+                android:text="System Activity"
                 android:textSize="22sp"
                 android:textStyle="bold"/>
 
@@ -184,7 +197,7 @@
                         android:id="@+id/tvRecentActivityTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="No Active Events"
+                        android:text="No Recent Updates"
                         android:textSize="18sp"
                         android:textStyle="bold"/>
 
@@ -192,7 +205,7 @@
                         android:id="@+id/tvRecentActivityDesc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Stay tuned for new updates."
+                        android:text="Everything is up to date."
                         android:textColor="#64748B"/>
 
                 </LinearLayout>

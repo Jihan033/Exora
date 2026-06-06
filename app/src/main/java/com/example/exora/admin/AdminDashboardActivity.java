@@ -1,15 +1,18 @@
 package com.example.exora.admin;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.exora.NotificationActivity;
 import com.example.exora.R;
 import com.example.exora.database.DatabaseHelper;
 import com.example.exora.model.EventModel;
@@ -22,6 +25,8 @@ public class AdminDashboardActivity extends AppCompatActivity {
     private TextView btnViewCalendar;
     private LinearLayout dashEventContainer, allAgendasContainer;
     private TextView tvRecentActivityTitle, tvRecentActivityDesc;
+    private ImageView btnAdminNotification;
+    private View adminNotifBadge;
     private DatabaseHelper dbHelper;
 
     @Override
@@ -41,6 +46,8 @@ public class AdminDashboardActivity extends AppCompatActivity {
         allAgendasContainer = findViewById(R.id.allAgendasContainer);
         tvRecentActivityTitle = findViewById(R.id.tvRecentActivityTitle);
         tvRecentActivityDesc = findViewById(R.id.tvRecentActivityDesc);
+        btnAdminNotification = findViewById(R.id.btnAdminNotification);
+        adminNotifBadge = findViewById(R.id.adminNotifBadge);
 
         setupNavigation();
     }
@@ -49,6 +56,25 @@ public class AdminDashboardActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         refreshDashboardData();
+        checkNotifications();
+    }
+
+    private void checkNotifications() {
+        Cursor cursor = dbHelper.getUnreadNotifications("ADMIN");
+        if (cursor != null && cursor.getCount() > 0) {
+            adminNotifBadge.setVisibility(View.VISIBLE);
+            
+            // Update Recent Activity with the latest join notification
+            if (cursor.moveToLast()) {
+                String title = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_NOTIF_TITLE));
+                String message = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_NOTIF_MESSAGE));
+                tvRecentActivityTitle.setText(title);
+                tvRecentActivityDesc.setText(message);
+            }
+            cursor.close();
+        } else {
+            adminNotifBadge.setVisibility(View.GONE);
+        }
     }
 
     private void refreshDashboardData() {
@@ -56,10 +82,12 @@ public class AdminDashboardActivity extends AppCompatActivity {
         
         loadUpcomingHighlights(events);
         loadAllAgendas(events);
-        updateActiveRecentActivity(events);
+        // Default recent activity if no new notifications
+        if (adminNotifBadge.getVisibility() == View.GONE) {
+            updateActiveRecentActivity(events);
+        }
     }
 
-    // Menampilkan highlight agenda di horizontal scroll
     private void loadUpcomingHighlights(List<EventModel> events) {
         dashEventContainer.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(this);
@@ -77,15 +105,12 @@ public class AdminDashboardActivity extends AppCompatActivity {
         }
     }
 
-    // Menampilkan seluruh list agenda secara vertikal
     private void loadAllAgendas(List<EventModel> events) {
         allAgendasContainer.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(this);
 
         for (EventModel event : events) {
             View cardView = inflater.inflate(R.layout.item_admin_event_card, allAgendasContainer, false);
-            
-            // Sembunyikan tombol manage agar dashboard tetap bersih, atau biarkan jika ingin akses cepat
             cardView.findViewById(R.id.btnManage).setOnClickListener(v -> openManageEvent(event.getId()));
 
             ((TextView) cardView.findViewById(R.id.tvTimeRange)).setText(event.getTime());
@@ -97,19 +122,14 @@ public class AdminDashboardActivity extends AppCompatActivity {
         }
     }
 
-    // Menyesuaikan Recent Activity dengan agenda yang paling "Aktif"
     private void updateActiveRecentActivity(List<EventModel> events) {
         EventModel priorityEvent = null;
-
-        // Cari yang Ongoing dulu
         for (EventModel e : events) {
             if (e.getStatus().equalsIgnoreCase("Ongoing")) {
                 priorityEvent = e;
                 break;
             }
         }
-
-        // Jika tidak ada, cari yang Registration Open
         if (priorityEvent == null) {
             for (EventModel e : events) {
                 if (e.getStatus().equalsIgnoreCase("Registration Open")) {
@@ -117,11 +137,6 @@ public class AdminDashboardActivity extends AppCompatActivity {
                     break;
                 }
             }
-        }
-
-        // Terakhir, yang Upcoming
-        if (priorityEvent == null && !events.isEmpty()) {
-            priorityEvent = events.get(events.size() - 1); // Ambil yang paling baru dibuat
         }
 
         if (priorityEvent != null) {
@@ -141,7 +156,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
     }
 
     private void setupNavigation() {
-        btnDashboard.setOnClickListener(v -> Toast.makeText(this, "Dashboard", Toast.LENGTH_SHORT).show());
+        btnDashboard.setOnClickListener(v -> {});
 
         btnAgenda.setOnClickListener(v -> {
             startActivity(new Intent(this, AdminAgendaActivity.class));
@@ -160,6 +175,13 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
         btnViewCalendar.setOnClickListener(v -> {
             startActivity(new Intent(this, AdminAgendaActivity.class));
+            overridePendingTransition(R.transition.slide_in_right, R.transition.slide_out_left);
+        });
+
+        btnAdminNotification.setOnClickListener(v -> {
+            Intent intent = new Intent(this, NotificationActivity.class);
+            intent.putExtra("TARGET_TYPE", "ADMIN");
+            startActivity(intent);
             overridePendingTransition(R.transition.slide_in_right, R.transition.slide_out_left);
         });
     }

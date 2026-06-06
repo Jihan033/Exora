@@ -13,6 +13,27 @@
         android:theme="@style/Theme.Exora">
 
         <activity
+            android:name=".user.EditProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".user.UserProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".user.UserClubDashboardActivity"
+            android:exported="false" />
+        <activity
+            android:name=".user.UserClubActivity"
+            android:exported="false" />
+        <activity
+            android:name=".NotificationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".user.UserAgendaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".user.UserDashboardActivity"
+            android:exported="false" />
+        <activity
             android:name=".admin.AdminPrivacyProfileActivity"
             android:exported="false" />
         <activity

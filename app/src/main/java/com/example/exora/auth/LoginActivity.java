@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.exora.R;
 import com.example.exora.admin.AdminDashboardActivity;
+import com.example.exora.user.UserDashboardActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -86,11 +87,13 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.LENGTH_SHORT
             ).show();
 
-            // PINDAH KE DASHBOARD
-            Intent intent = new Intent(
-                    LoginActivity.this,
-                    AdminDashboardActivity.class
-            );
+            // PINDAH KE DASHBOARD SESUAI ROLE
+            Intent intent;
+            if (selectedRole.equals("Admin")) {
+                intent = new Intent(LoginActivity.this, AdminDashboardActivity.class);
+            } else {
+                intent = new Intent(LoginActivity.this, UserDashboardActivity.class);
+            }
 
             startActivity(intent);
             finish();

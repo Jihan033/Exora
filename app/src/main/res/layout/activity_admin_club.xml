@@ -37,6 +37,7 @@
             android:textStyle="bold"/>
 
         <ImageView
+            android:id="@+id/btnAdminNotification"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/notification"
@@ -359,7 +360,6 @@
                         android:textStyle="bold"/>
 
                 </LinearLayout>
-
             </androidx.cardview.widget.CardView>
 
         </LinearLayout>
