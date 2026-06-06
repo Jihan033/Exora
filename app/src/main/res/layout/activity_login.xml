@@ -78,20 +78,6 @@
                         android:textSize="18sp"
                         android:textStyle="bold"/>
 
-                    <!-- Teacher -->
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/btnTeacher"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="@android:color/transparent"
-                        android:backgroundTint="@null"
-                        android:text="Teacher"
-                        android:textAllCaps="false"
-                        android:textColor="#374151"
-                        android:textSize="18sp"
-                        android:textStyle="bold"/>
-
                     <!-- Admin -->
                     <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/btnAdmin"

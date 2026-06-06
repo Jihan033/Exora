@@ -14,7 +14,7 @@ public class LoginActivity extends AppCompatActivity {
 
     EditText etEmail, etPassword;
     Button btnLogin;
-    Button btnStudent, btnTeacher, btnAdmin;
+    Button btnStudent, btnAdmin;
 
     String selectedRole = "Student";
 
@@ -32,7 +32,6 @@ public class LoginActivity extends AppCompatActivity {
 
         // ROLE BUTTON
         btnStudent = findViewById(R.id.btnStudent);
-        btnTeacher = findViewById(R.id.btnTeacher);
         btnAdmin = findViewById(R.id.btnAdmin);
 
         // DEFAULT ACTIVE
@@ -43,24 +42,9 @@ public class LoginActivity extends AppCompatActivity {
             selectedRole = "Student";
 
             btnStudent.setBackgroundResource(R.drawable.role_selected);
-            btnTeacher.setBackgroundResource(android.R.color.transparent);
             btnAdmin.setBackgroundResource(android.R.color.transparent);
 
             btnStudent.setTextColor(getResources().getColor(android.R.color.white));
-            btnTeacher.setTextColor(getResources().getColor(android.R.color.black));
-            btnAdmin.setTextColor(getResources().getColor(android.R.color.black));
-        });
-
-        // TEACHER
-        btnTeacher.setOnClickListener(v -> {
-            selectedRole = "Teacher";
-
-            btnTeacher.setBackgroundResource(R.drawable.role_selected);
-            btnStudent.setBackgroundResource(android.R.color.transparent);
-            btnAdmin.setBackgroundResource(android.R.color.transparent);
-
-            btnTeacher.setTextColor(getResources().getColor(android.R.color.white));
-            btnStudent.setTextColor(getResources().getColor(android.R.color.black));
             btnAdmin.setTextColor(getResources().getColor(android.R.color.black));
         });
 
@@ -70,11 +54,9 @@ public class LoginActivity extends AppCompatActivity {
 
             btnAdmin.setBackgroundResource(R.drawable.role_selected);
             btnStudent.setBackgroundResource(android.R.color.transparent);
-            btnTeacher.setBackgroundResource(android.R.color.transparent);
 
             btnAdmin.setTextColor(getResources().getColor(android.R.color.white));
             btnStudent.setTextColor(getResources().getColor(android.R.color.black));
-            btnTeacher.setTextColor(getResources().getColor(android.R.color.black));
         });
 
         // LOGIN BUTTON
