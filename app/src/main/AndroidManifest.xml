@@ -13,7 +13,22 @@
         android:theme="@style/Theme.Exora">
 
         <activity
-            android:name=".admin.DetailActivity"
+            android:name=".admin.PrivacyProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".admin.ManageMemberActivity"
+            android:exported="false" />
+        <activity
+            android:name=".admin.ManageRecruitmentActivity"
+            android:exported="false" />
+        <activity
+            android:name=".admin.RecruitmentActivity"
+            android:exported="false" />
+        <activity
+            android:name=".admin.CreateEventActivity"
+            android:exported="false" />
+        <activity
+            android:name=".admin.ManageEventActivity"
             android:exported="false" />
         <activity
             android:name=".admin.ProfileActivity"

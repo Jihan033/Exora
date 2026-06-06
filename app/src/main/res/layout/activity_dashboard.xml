@@ -92,7 +92,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="You have 3 meetings today and 2 pending organization updates."
+                android:text="Check your organization schedules and updates below."
                 android:textColor="#64748B"
                 android:textSize="14sp"/>
 
@@ -118,7 +118,9 @@
                     android:layout_height="wrap_content"
                     android:text="View Calendar"
                     android:textColor="#2563EB"
-                    android:textSize="12sp"/>
+                    android:textSize="12sp"
+                    android:clickable="true"
+                    android:focusable="true"/>
             </LinearLayout>
 
             <!-- HORIZONTAL AGENDA -->
@@ -129,162 +131,30 @@
                 android:scrollbars="none">
 
                 <LinearLayout
+                    android:id="@+id/dashEventContainer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
-
-                    <!-- CARD 1 -->
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="280dp"
-                        android:layout_height="170dp"
-                        android:layout_marginEnd="14dp"
-                        app:cardCornerRadius="16dp"
-                        app:cardElevation="4dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:padding="18dp">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="#D8E2FF"
-                                android:padding="6dp"
-                                android:text="10:00 AM"
-                                android:textStyle="bold"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="18dp"
-                                android:text="Debate Club Prep"
-                                android:textSize="18sp"
-                                android:textStyle="bold"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="School Library, Room 302"
-                                android:textColor="#64748B"/>
-
-                        </LinearLayout>
-                    </androidx.cardview.widget.CardView>
-
-                    <!-- CARD 2 -->
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="280dp"
-                        android:layout_height="170dp"
-                        app:cardCornerRadius="16dp"
-                        app:cardElevation="4dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:padding="18dp">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="#C8FFD8"
-                                android:padding="6dp"
-                                android:text="02:30 PM"
-                                android:textStyle="bold"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="18dp"
-                                android:text="OSIS Weekly Meeting"
-                                android:textSize="18sp"
-                                android:textStyle="bold"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Hall Room A"
-                                android:textColor="#64748B"/>
-
-                        </LinearLayout>
-                    </androidx.cardview.widget.CardView>
-
+                    <!-- Dynamic cards will be added here -->
                 </LinearLayout>
             </HorizontalScrollView>
 
-            <!-- ORGANIZATION -->
+            <!-- ALL AGENDAS (Replaced My Organizations) -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
-                android:text="My Organizations"
+                android:text="Organization Agendas"
                 android:textSize="22sp"
                 android:textStyle="bold"/>
 
             <LinearLayout
+                android:id="@+id/allAgendasContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
-                android:orientation="horizontal">
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
-                    android:layout_height="160dp"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
-                    app:cardCornerRadius="16dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="#EEF3FF"
-                        android:orientation="vertical"
-                        android:padding="16dp">
-
-                        <TextView
-                            android:text="OSIS"
-                            android:textSize="18sp"
-                            android:textStyle="bold"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
-
-                        <TextView
-                            android:text="85% Participation"
-                            android:textColor="#64748B"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
-                    android:layout_height="160dp"
-                    android:layout_weight="1"
-                    app:cardCornerRadius="16dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="#EFFFF5"
-                        android:orientation="vertical"
-                        android:padding="16dp">
-
-                        <TextView
-                            android:text="Basket Club"
-                            android:textSize="18sp"
-                            android:textStyle="bold"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
-
-                        <TextView
-                            android:text="Active Member"
-                            android:textColor="#64748B"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
+                android:orientation="vertical">
+                <!-- All agendas will be listed here -->
             </LinearLayout>
 
             <!-- RECENT ACTIVITY -->
@@ -297,6 +167,7 @@
                 android:textStyle="bold"/>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/cardRecentActivity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
@@ -310,16 +181,18 @@
                     android:padding="16dp">
 
                     <TextView
+                        android:id="@+id/tvRecentActivityTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="New Event: School Festival"
+                        android:text="No Active Events"
                         android:textSize="18sp"
                         android:textStyle="bold"/>
 
                     <TextView
+                        android:id="@+id/tvRecentActivityDesc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Registration is now open."
+                        android:text="Stay tuned for new updates."
                         android:textColor="#64748B"/>
 
                 </LinearLayout>
