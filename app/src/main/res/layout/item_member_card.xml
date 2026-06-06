@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="2dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="12dp">
+
+        <ImageView
+            android:id="@+id/imgMemberProfile"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/rounded_bg"
+            android:clipToOutline="true"
+            android:src="@drawable/profile"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvMemberName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Name"
+                android:textColor="#111827"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/tvMemberRole"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Role"
+                android:textColor="#6B7280"
+                android:textSize="13sp"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvTypeBadge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#F3F4F6"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="4dp"
+            android:text="MEMBER"
+            android:textColor="#6B7280"
+            android:textSize="10sp"
+            android:textStyle="bold"/>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
