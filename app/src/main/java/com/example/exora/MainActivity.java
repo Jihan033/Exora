@@ -1,9 +1,11 @@
-package com.example.exora.admin;
+package com.example.exora;
 
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.exora.auth.LoginActivity;
 
 public class MainActivity extends AppCompatActivity {
 

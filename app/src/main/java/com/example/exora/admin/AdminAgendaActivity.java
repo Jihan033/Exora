@@ -11,6 +11,8 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.exora.R;
+import com.example.exora.database.DatabaseHelper;
+import com.example.exora.model.EventModel;
 
 import java.util.List;
 

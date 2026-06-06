@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import com.example.exora.R;
+import com.example.exora.database.DatabaseHelper;
 
 public class AdminClubActivity extends AppCompatActivity {
 

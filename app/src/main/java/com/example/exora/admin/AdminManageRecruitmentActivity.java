@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.exora.R;
+import com.example.exora.database.DatabaseHelper;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Calendar;

@@ -43,10 +43,10 @@
             android:name=".admin.AdminDashboardActivity"
             android:exported="false" />
         <activity
-            android:name=".admin.LoginActivity"
+            android:name=".auth.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".admin.MainActivity"
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

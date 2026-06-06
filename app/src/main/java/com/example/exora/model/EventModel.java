@@ -1,4 +1,4 @@
-package com.example.exora.admin;
+package com.example.exora.model;
 
 public class EventModel {
     private int id;
