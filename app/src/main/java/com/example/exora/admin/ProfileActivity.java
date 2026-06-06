@@ -13,7 +13,8 @@ public class ProfileActivity extends AppCompatActivity {
     LinearLayout btnDashboard,
             btnAgenda,
             btnClub,
-            btnProfile;
+            btnProfile,
+            btnPrivacyProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +25,7 @@ public class ProfileActivity extends AppCompatActivity {
         btnAgenda = findViewById(R.id.btnAgenda);
         btnClub = findViewById(R.id.btnClub);
         btnProfile = findViewById(R.id.btnProfile);
+        btnPrivacyProfile = findViewById(R.id.btnPrivacyProfile);
 
         // Dashboard
         btnDashboard.setOnClickListener(v -> {
@@ -72,6 +74,19 @@ public class ProfileActivity extends AppCompatActivity {
 
         // Profile (stay here)
         btnProfile.setOnClickListener(v -> {
+        });
+
+        // Privacy Profile
+        btnPrivacyProfile.setOnClickListener(v -> {
+            startActivity(new Intent(
+                    ProfileActivity.this,
+                    PrivacyProfileActivity.class
+            ));
+
+            overridePendingTransition(
+                    R.transition.slide_in_right,
+                    R.transition.slide_out_left
+            );
         });
     }
 }
