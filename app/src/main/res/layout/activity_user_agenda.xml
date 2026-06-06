@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F8FAFC">
+
+    <!-- HEADER -->
+    <LinearLayout
+        android:id="@+id/headerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:background="#FFFFFF"
+        android:elevation="3dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp">
+
+        <ImageView
+            android:id="@+id/imgHeaderProfile"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:background="@drawable/rounded_bg"
+            android:clipToOutline="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/profile"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="12dp"
+            android:text="Exora"
+            android:textColor="#2563EB"
+            android:textSize="24sp"
+            android:textStyle="bold"/>
+
+        <ImageView
+            android:id="@+id/btnNotification"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/notification"
+            app:tint="#64748B"/>
+    </LinearLayout>
+
+    <!-- CONTENT -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="72dp"
+        android:layout_marginBottom="78dp"
+        android:fillViewport="true"
+        android:clipToPadding="false">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <!-- DATE SELECTOR TITLE -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tvMonth"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="September 2024"
+                    android:textColor="#111827"
+                    android:textSize="20sp"
+                    android:textStyle="bold"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/btnPrevMonth"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:background="#F1F5F9"
+                        android:src="@android:drawable/ic_media_previous"
+                        app:tint="#64748B"
+                        android:scaleType="centerInside"/>
+
+                    <ImageButton
+                        android:id="@+id/btnNextMonth"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_marginStart="8dp"
+                        android:background="#F1F5F9"
+                        android:src="@android:drawable/ic_media_next"
+                        app:tint="#64748B"
+                        android:scaleType="centerInside"/>
+                </LinearLayout>
+            </RelativeLayout>
+
+            <!-- WEEKLY CALENDAR -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/dayMon"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:orientation="vertical">
+                    <TextView android:text="MON" android:textSize="10sp" android:textColor="#94A3B8" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                    <TextView android:id="@+id/tvDayMon" android:text="09" android:textSize="16sp" android:textColor="#111827" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/dayTue"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:orientation="vertical">
+                    <TextView android:text="TUE" android:textSize="10sp" android:textColor="#94A3B8" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                    <TextView android:id="@+id/tvDayTue" android:text="10" android:textSize="16sp" android:textColor="#111827" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/dayWed"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:orientation="vertical">
+                    <TextView android:text="WED" android:textSize="10sp" android:textColor="#94A3B8" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                    <TextView android:id="@+id/tvDayWed" android:text="11" android:textSize="16sp" android:textColor="#111827" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/dayThu"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:orientation="vertical">
+                    <TextView android:text="THU" android:textSize="10sp" android:textColor="#94A3B8" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                    <TextView android:id="@+id/tvDayThu" android:text="12" android:textSize="16sp" android:textColor="#111827" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/dayFri"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:orientation="vertical">
+                    <TextView android:text="FRI" android:textSize="10sp" android:textColor="#94A3B8" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                    <TextView android:id="@+id/tvDayFri" android:text="13" android:textSize="16sp" android:textColor="#111827" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/daySat"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:orientation="vertical">
+                    <TextView android:text="SAT" android:textSize="10sp" android:textColor="#94A3B8" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                    <TextView android:id="@+id/tvDaySat" android:text="14" android:textSize="16sp" android:textColor="#111827" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/daySun"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:orientation="vertical">
+                    <TextView android:text="SUN" android:textSize="10sp" android:textColor="#94A3B8" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                    <TextView android:id="@+id/tvDaySun" android:text="15" android:textSize="16sp" android:textColor="#111827" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- MY SCHEDULE TITLE -->
+            <TextView
+                android:id="@+id/tvMySchedule"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:text="My Registered Events"
+                android:textColor="#111827"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:visibility="gone"/>
+
+            <!-- JOINED EVENTS CONTAINER -->
+            <LinearLayout
+                android:id="@+id/joinedEventContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="vertical">
+                <!-- Joined events will be added here dynamically -->
+            </LinearLayout>
+
+            <!-- ALL EVENTS TITLE -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:text="Available Events"
+                android:textColor="#111827"
+                android:textSize="20sp"
+                android:textStyle="bold"/>
+
+            <!-- DYNAMIC CARDS CONTAINER -->
+            <LinearLayout
+                android:id="@+id/eventListContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="vertical">
+                <!-- Cards will be added here dynamically -->
+            </LinearLayout>
+
+            <!-- FOOTER INFO -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="40dp"
+                android:text="Stay updated with your latest organization activities."
+                android:textAlignment="center"
+                android:textColor="#94A3B8"
+                android:textSize="12sp"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- BOTTOM NAVIGATION -->
+    <LinearLayout
+        android:id="@+id/bottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="78dp"
+        android:layout_gravity="bottom"
+        android:background="#FFFFFF"
+        android:elevation="10dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingStart="18dp"
+        android:paddingEnd="18dp">
+
+        <!-- Dashboard -->
+        <LinearLayout
+            android:id="@+id/btnDashboard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/dashboard"
+                app:tint="#94A3B8"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dashboard"
+                android:textColor="#94A3B8"
+                android:textSize="10sp"/>
+        </LinearLayout>
+
+        <!-- Agenda -->
+        <LinearLayout
+            android:id="@+id/btnAgenda"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+            <androidx.cardview.widget.CardView
+                android:layout_width="74dp"
+                android:layout_height="56dp"
+                app:cardCornerRadius="16dp"
+                app:cardBackgroundColor="#EEF4FF"
+                app:cardElevation="0dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical">
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/agenda"
+                        app:tint="#2563EB"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Agenda"
+                        android:textColor="#2563EB"
+                        android:textSize="10sp"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+
+        <!-- Clubs -->
+        <LinearLayout
+            android:id="@+id/btnClub"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/club"
+                app:tint="#94A3B8"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Clubs"
+                android:textColor="#94A3B8"
+                android:textSize="10sp"/>
+        </LinearLayout>
+
+        <!-- Profile -->
+        <LinearLayout
+            android:id="@+id/btnProfile"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/profilebutton"
+                app:tint="#94A3B8"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Profile"
+                android:textColor="#94A3B8"
+                android:textSize="10sp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
