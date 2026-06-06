@@ -9,11 +9,9 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.exora.R;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class DashboardActivity extends AppCompatActivity {
 
-    FloatingActionButton fabAdd;
     LinearLayout btnDashboard, btnAgenda,
             btnClub, btnProfile;
     TextView btnViewCalendar;
@@ -22,8 +20,6 @@ public class DashboardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
-
-        fabAdd = findViewById(R.id.fabAdd);
 
         btnDashboard =
                 findViewById(R.id.btnDashboard);
@@ -39,13 +35,6 @@ public class DashboardActivity extends AppCompatActivity {
 
         btnViewCalendar =
                 findViewById(R.id.btnViewCalendar);
-
-        fabAdd.setOnClickListener(v ->
-                Toast.makeText(
-                        this,
-                        "Tambah aktivitas organisasi",
-                        Toast.LENGTH_SHORT
-                ).show());
 
         btnDashboard.setOnClickListener(v ->
                 Toast.makeText(this,

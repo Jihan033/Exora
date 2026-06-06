@@ -451,17 +451,4 @@
 
     </LinearLayout>
 
-    <!-- FLOATING BUTTON -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAdd"
-        android:layout_width="58dp"
-        android:layout_height="58dp"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="95dp"
-        android:src="@android:drawable/ic_input_add"
-        app:backgroundTint="#0058BE"
-        app:tint="#FFFFFF"
-        app:elevation="12dp"/>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
