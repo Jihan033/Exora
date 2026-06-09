@@ -15,6 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.exora.NotificationActivity;
 import com.example.exora.R;
+import com.example.exora.auth.LoginActivity;
+import com.example.exora.auth.SessionManager;
 import com.example.exora.database.DatabaseHelper;
 
 public class UserProfileActivity extends AppCompatActivity {
@@ -24,7 +26,8 @@ public class UserProfileActivity extends AppCompatActivity {
     private TextView tvProfileName, tvStudentId, tvBio;
     private ImageView imgUserProfile, imgHeaderProfile;
     private DatabaseHelper dbHelper;
-    private String currentUserName = "Alex Chen"; // Should ideally come from Session/Prefs
+    private SessionManager sessionManager;
+    private String currentUserName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +35,8 @@ public class UserProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_profile);
 
         dbHelper = new DatabaseHelper(this);
+        sessionManager = new SessionManager(this);
+        currentUserName = sessionManager.getUserName();
 
         // UI References
         tvProfileName = findViewById(R.id.tvProfileName);
@@ -55,14 +60,22 @@ public class UserProfileActivity extends AppCompatActivity {
         });
 
         findViewById(R.id.btnSignOut).setOnClickListener(v -> {
-            Toast.makeText(this, "Signing out...", Toast.LENGTH_SHORT).show();
-            finishAffinity();
+            handleLogout();
         });
 
         findViewById(R.id.btnEditProfile).setOnClickListener(v -> {
             Intent intent = new Intent(this, EditProfileActivity.class);
             startActivity(intent);
         });
+    }
+
+    private void handleLogout() {
+        Toast.makeText(this, "Signing out...", Toast.LENGTH_SHORT).show();
+        sessionManager.logoutUser();
+        Intent intent = new Intent(UserProfileActivity.this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 
     @Override
@@ -81,7 +94,6 @@ public class UserProfileActivity extends AppCompatActivity {
             String imageUriStr = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_USER_IMAGE));
             
             tvProfileName.setText(name);
-            currentUserName = name;
 
             if (tvStudentId != null) tvStudentId.setText("Student ID: " + studentId);
             if (tvBio != null) tvBio.setText(bio);

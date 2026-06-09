@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -18,16 +19,26 @@ import androidx.core.content.ContextCompat;
 
 import com.example.exora.NotificationActivity;
 import com.example.exora.R;
+import com.example.exora.auth.ApiService;
+import com.example.exora.auth.EventJoinRequest;
+import com.example.exora.auth.RetrofitClient;
+import com.example.exora.auth.SessionManager;
 import com.example.exora.database.DatabaseHelper;
 import com.example.exora.model.EventModel;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class UserAgendaActivity extends AppCompatActivity {
 
+    private static final String TAG = "UserAgendaActivity";
     private LinearLayout btnDashboard, btnAgenda, btnClub, btnProfile;
     private LinearLayout eventListContainer, joinedEventContainer;
     private TextView tvMySchedule, tvMonth;
@@ -37,12 +48,16 @@ public class UserAgendaActivity extends AppCompatActivity {
     private TextView[] dayTextViews = new TextView[7];
     
     private DatabaseHelper dbHelper;
-    private final String currentUserName = "Alex Chen"; // Mock current user
+    private SessionManager sessionManager;
+    private ApiService apiService;
+    private String currentUserName;
 
     private Calendar calendar;
     private SimpleDateFormat monthFormat = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
     private SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
     private String selectedDate;
+
+    private List<EventModel> serverEvents = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +65,10 @@ public class UserAgendaActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_agenda);
 
         dbHelper = new DatabaseHelper(this);
+        sessionManager = new SessionManager(this);
+        currentUserName = sessionManager.getUserName();
+        apiService = RetrofitClient.getApiService();
+        
         calendar = Calendar.getInstance();
         selectedDate = dateFormat.format(calendar.getTime());
 
@@ -128,19 +147,19 @@ public class UserAgendaActivity extends AppCompatActivity {
             dayLayouts[i].setOnClickListener(v -> {
                 selectedDate = dateStr;
                 updateCalendarUI();
-                loadEvents();
+                fetchEventsFromServer();
             });
 
             tempCal.add(Calendar.DAY_OF_MONTH, 1);
         }
-        loadEvents();
+        fetchEventsFromServer();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         loadHeaderData();
-        loadEvents();
+        fetchEventsFromServer();
     }
 
     private void loadHeaderData() {
@@ -156,13 +175,36 @@ public class UserAgendaActivity extends AppCompatActivity {
         }
     }
 
-    private void loadEvents() {
+    private void fetchEventsFromServer() {
+        apiService.getEvents().enqueue(new Callback<List<EventModel>>() {
+            @Override
+            public void onResponse(Call<List<EventModel>> call, Response<List<EventModel>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    serverEvents = response.body();
+                    displayEvents();
+                } else {
+                    Log.e(TAG, "Failed to fetch events from server");
+                    serverEvents = dbHelper.getAllEvents();
+                    displayEvents();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<EventModel>> call, Throwable t) {
+                Log.e(TAG, "Network error", t);
+                serverEvents = dbHelper.getAllEvents();
+                displayEvents();
+            }
+        });
+    }
+
+    private void displayEvents() {
         if (eventListContainer == null || joinedEventContainer == null) return;
         
         eventListContainer.removeAllViews();
         joinedEventContainer.removeAllViews();
         
-        List<EventModel> allEvents = dbHelper.getAllEvents();
+        // Use local DB to check which events are joined by the user
         List<EventModel> joinedEvents = dbHelper.getEventsForUser(currentUserName);
 
         LayoutInflater inflater = LayoutInflater.from(this);
@@ -181,8 +223,8 @@ public class UserAgendaActivity extends AppCompatActivity {
         
         tvMySchedule.setVisibility(anyJoinedFound ? View.VISIBLE : View.GONE);
 
-        // 2. Load Available Events (Not joined yet) for selected date
-        for (final EventModel event : allEvents) {
+        // 2. Load Available Events (Not joined yet) for selected date from server list
+        for (final EventModel event : serverEvents) {
             if (!event.getDate().equals(selectedDate)) continue;
 
             boolean alreadyJoined = false;
@@ -228,12 +270,29 @@ public class UserAgendaActivity extends AppCompatActivity {
             btnAction.setBackgroundTintList(ContextCompat.getColorStateList(this, android.R.color.darker_gray));
         } else {
             btnAction.setText("Join Event");
-            btnAction.setOnClickListener(v -> {
-                dbHelper.joinEvent(event.getId(), currentUserName);
-                Toast.makeText(this, "Successfully registered for " + event.getName(), Toast.LENGTH_SHORT).show();
-                loadEvents(); // Refresh lists
-            });
+            btnAction.setOnClickListener(v -> joinEvent(event));
         }
+    }
+
+    private void joinEvent(EventModel event) {
+        String token = "Bearer " + sessionManager.getUserName();
+        apiService.joinEvent(token, new EventJoinRequest(event.getId())).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    dbHelper.joinEvent(event.getId(), currentUserName);
+                    Toast.makeText(UserAgendaActivity.this, "Successfully registered for " + event.getName(), Toast.LENGTH_SHORT).show();
+                    fetchEventsFromServer();
+                } else {
+                    Toast.makeText(UserAgendaActivity.this, "Failed to register", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(UserAgendaActivity.this, "Network error", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void setupNavigation() {
@@ -250,13 +309,13 @@ public class UserAgendaActivity extends AppCompatActivity {
 
         btnClub.setOnClickListener(v -> {
             startActivity(new Intent(UserAgendaActivity.this, UserClubActivity.class));
-            overridePendingTransition(R.transition.slide_in_right, R.transition.slide_out_left);
+            overridePendingTransition(R.transition.slide_in_left, R.transition.slide_out_right);
             finish();
         });
 
         btnProfile.setOnClickListener(v -> {
             startActivity(new Intent(UserAgendaActivity.this, UserProfileActivity.class));
-            overridePendingTransition(R.transition.slide_in_right, R.transition.slide_out_left);
+            overridePendingTransition(R.transition.slide_in_left, R.transition.slide_out_right);
             finish();
         });
     }

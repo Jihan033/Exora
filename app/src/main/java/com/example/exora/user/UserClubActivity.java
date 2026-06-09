@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -16,19 +17,32 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.exora.NotificationActivity;
 import com.example.exora.R;
+import com.example.exora.auth.ApiService;
+import com.example.exora.auth.ClubApplyRequest;
+import com.example.exora.auth.RetrofitClient;
+import com.example.exora.auth.SessionManager;
 import com.example.exora.database.DatabaseHelper;
+import com.example.exora.model.ClubModel;
+import com.example.exora.model.RecruitmentModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class UserClubActivity extends AppCompatActivity {
 
+    private static final String TAG = "UserClubActivity";
     private LinearLayout btnDashboard, btnAgenda, btnClub, btnProfile;
     private LinearLayout myClubsContainer, availableClubsContainer;
     private TextView tvMyClubsTitle;
     private ImageView imgHeaderProfile;
     private DatabaseHelper dbHelper;
-    private final String currentUserName = "Alex Chen";
+    private SessionManager sessionManager;
+    private ApiService apiService;
+    private String currentUserName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +50,9 @@ public class UserClubActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_club);
 
         dbHelper = new DatabaseHelper(this);
+        sessionManager = new SessionManager(this);
+        currentUserName = sessionManager.getUserName();
+        apiService = RetrofitClient.getApiService();
 
         // UI References
         btnDashboard = findViewById(R.id.btnDashboard);
@@ -62,7 +79,7 @@ public class UserClubActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         loadHeaderData();
-        loadClubsContent();
+        fetchClubsAndRecruitments();
     }
 
     private void loadHeaderData() {
@@ -78,75 +95,103 @@ public class UserClubActivity extends AppCompatActivity {
         }
     }
 
-    private void loadClubsContent() {
-        myClubsContainer.removeAllViews();
-        availableClubsContainer.removeAllViews();
+    private void fetchClubsAndRecruitments() {
+        String token = "Bearer " + sessionManager.getUserName();
         
+        // Fetch My Clubs
+        apiService.getMyClubs(token).enqueue(new Callback<List<ClubModel>>() {
+            @Override
+            public void onResponse(Call<List<ClubModel>> call, Response<List<ClubModel>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    displayMyClubs(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ClubModel>> call, Throwable t) {
+                Log.e(TAG, "Error fetching my clubs", t);
+            }
+        });
+
+        // Fetch Available Recruitments
+        apiService.getRecruitments().enqueue(new Callback<List<RecruitmentModel>>() {
+            @Override
+            public void onResponse(Call<List<RecruitmentModel>> call, Response<List<RecruitmentModel>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    displayAvailableClubs(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<RecruitmentModel>> call, Throwable t) {
+                Log.e(TAG, "Error fetching recruitments", t);
+            }
+        });
+    }
+
+    private void displayMyClubs(List<ClubModel> clubs) {
+        myClubsContainer.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(this);
         
-        // 1. Get clubs where user is a member
-        List<String> joinedClubNames = new ArrayList<>();
-        Cursor joinedCursor = dbHelper.getUserClubs(currentUserName);
-        if (joinedCursor != null && joinedCursor.moveToFirst()) {
+        if (!clubs.isEmpty()) {
             tvMyClubsTitle.setVisibility(View.VISIBLE);
-            do {
-                String clubName = joinedCursor.getString(joinedCursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_MEM_CLUB));
-                joinedClubNames.add(clubName);
-                
+            for (ClubModel club : clubs) {
                 View clubCard = inflater.inflate(R.layout.item_club_card, myClubsContainer, false);
-                ((TextView) clubCard.findViewById(R.id.tvClubName)).setText(clubName);
-                ((TextView) clubCard.findViewById(R.id.tvClubCategory)).setText("MEMBER");
+                ((TextView) clubCard.findViewById(R.id.tvClubName)).setText(club.getName());
+                ((TextView) clubCard.findViewById(R.id.tvClubCategory)).setText(club.getCategory());
                 ((TextView) clubCard.findViewById(R.id.tvClubStatus)).setText("ACTIVE");
-                ((TextView) clubCard.findViewById(R.id.tvClubDescription)).setText("You are a registered member of this club.");
+                ((TextView) clubCard.findViewById(R.id.tvClubDescription)).setText(club.getDescription());
                 clubCard.findViewById(R.id.tvClubDeadline).setVisibility(View.GONE);
                 
                 Button btnAction = clubCard.findViewById(R.id.btnClubAction);
                 btnAction.setText("View Dashboard");
                 btnAction.setOnClickListener(v -> {
                     Intent intent = new Intent(this, UserClubDashboardActivity.class);
-                    intent.putExtra("CLUB_NAME", clubName);
+                    intent.putExtra("CLUB_NAME", club.getName());
                     startActivity(intent);
                 });
-
-                // Show Team Members (Minimal view in list)
-                View teamSectionView = clubCard.findViewById(R.id.teamSection);
-                if (teamSectionView != null) {
-                    teamSectionView.setVisibility(View.GONE); // Hide team in the main list to keep it clean
-                }
-
                 myClubsContainer.addView(clubCard);
-            } while (joinedCursor.moveToNext());
-            joinedCursor.close();
+            }
         } else {
             tvMyClubsTitle.setVisibility(View.GONE);
         }
+    }
 
-        // 2. Get Open Recruitments
-        Cursor recCursor = dbHelper.getOpenRecruitments();
-        if (recCursor != null && recCursor.moveToFirst()) {
-            do {
-                String clubName = recCursor.getString(recCursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_RC_CLUB));
-                String deadline = recCursor.getString(recCursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_RC_DEADLINE));
-                String desc = recCursor.getString(recCursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_RC_DESC));
-                
-                // Skip if already joined
-                if (joinedClubNames.contains(clubName)) continue;
+    private void displayAvailableClubs(List<RecruitmentModel> recruitments) {
+        availableClubsContainer.removeAllViews();
+        LayoutInflater inflater = LayoutInflater.from(this);
 
-                View clubCard = inflater.inflate(R.layout.item_club_card, availableClubsContainer, false);
-                ((TextView) clubCard.findViewById(R.id.tvClubName)).setText(clubName);
-                ((TextView) clubCard.findViewById(R.id.tvClubDescription)).setText(desc);
-                ((TextView) clubCard.findViewById(R.id.tvClubDeadline)).setText("Deadline: " + deadline);
-                
-                Button btnApply = clubCard.findViewById(R.id.btnClubAction);
-                btnApply.setOnClickListener(v -> {
-                    Toast.makeText(this, "Applied to " + clubName + "!", Toast.LENGTH_LONG).show();
-                    dbHelper.addNotification("New Applicant", currentUserName + " applied to " + clubName, "ADMIN");
-                });
+        for (RecruitmentModel recruitment : recruitments) {
+            View clubCard = inflater.inflate(R.layout.item_club_card, availableClubsContainer, false);
+            ((TextView) clubCard.findViewById(R.id.tvClubName)).setText(recruitment.getClubName());
+            ((TextView) clubCard.findViewById(R.id.tvClubDescription)).setText(recruitment.getDescription());
+            ((TextView) clubCard.findViewById(R.id.tvClubDeadline)).setText("Deadline: " + recruitment.getDeadline());
+            
+            Button btnApply = clubCard.findViewById(R.id.btnClubAction);
+            btnApply.setText("Apply Now");
+            btnApply.setOnClickListener(v -> applyToClub(recruitment.getClubName()));
 
-                availableClubsContainer.addView(clubCard);
-            } while (recCursor.moveToNext());
-            recCursor.close();
+            availableClubsContainer.addView(clubCard);
         }
+    }
+
+    private void applyToClub(String clubName) {
+        String token = "Bearer " + sessionManager.getUserName();
+        apiService.applyToClub(token, new ClubApplyRequest(clubName)).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(UserClubActivity.this, "Application submitted for " + clubName, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(UserClubActivity.this, "Failed to submit application", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(UserClubActivity.this, "Network error", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void setupNavigation() {

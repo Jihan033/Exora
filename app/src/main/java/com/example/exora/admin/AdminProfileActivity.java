@@ -2,13 +2,18 @@ package com.example.exora.admin;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.exora.NotificationActivity;
 import com.example.exora.R;
+import com.example.exora.auth.LoginActivity;
+import com.example.exora.auth.SessionManager;
 
 public class AdminProfileActivity extends AppCompatActivity {
 
@@ -18,11 +23,16 @@ public class AdminProfileActivity extends AppCompatActivity {
             btnProfile,
             btnPrivacyProfile;
     ImageView btnAdminNotification;
+    Button btnSignOut;
+    TextView tvAdminName;
+    SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_profile);
+
+        sessionManager = new SessionManager(this);
 
         btnDashboard = findViewById(R.id.btnDashboard);
         btnAgenda = findViewById(R.id.btnAgenda);
@@ -30,6 +40,16 @@ public class AdminProfileActivity extends AppCompatActivity {
         btnProfile = findViewById(R.id.btnProfile);
         btnPrivacyProfile = findViewById(R.id.btnPrivacyProfile);
         btnAdminNotification = findViewById(R.id.btnAdminNotification);
+        
+        // Find Sign Out Button - in layout it's a Button without ID, so I should add ID or find it by type if it's the only one
+        // Looking at activity_admin_profile.xml, the Sign Out button is at the end.
+        // It doesn't have an ID. I will update the XML to add an ID.
+        btnSignOut = findViewById(R.id.btnSignOut);
+        tvAdminName = findViewById(R.id.tvAdminName); // Also update name in UI
+
+        if (tvAdminName != null) {
+            tvAdminName.setText(sessionManager.getUserName());
+        }
 
         // Dashboard
         btnDashboard.setOnClickListener(v -> {
@@ -76,10 +96,6 @@ public class AdminProfileActivity extends AppCompatActivity {
             finish();
         });
 
-        // Profile (stay here)
-        btnProfile.setOnClickListener(v -> {
-        });
-
         // Privacy Profile
         btnPrivacyProfile.setOnClickListener(v -> {
             startActivity(new Intent(
@@ -101,5 +117,18 @@ public class AdminProfileActivity extends AppCompatActivity {
                 overridePendingTransition(R.transition.slide_in_right, R.transition.slide_out_left);
             });
         }
+
+        if (btnSignOut != null) {
+            btnSignOut.setOnClickListener(v -> handleLogout());
+        }
+    }
+
+    private void handleLogout() {
+        Toast.makeText(this, "Signing out...", Toast.LENGTH_SHORT).show();
+        sessionManager.logoutUser();
+        Intent intent = new Intent(AdminProfileActivity.this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 }

@@ -67,11 +67,12 @@
 
             <!-- NAME -->
             <TextView
+                android:id="@+id/tvAdminName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="14dp"
-                android:text="Jihan"
+                android:text="Admin"
                 android:textColor="#111827"
                 android:textSize="22sp"
                 android:textStyle="bold"/>
@@ -304,6 +305,7 @@
 
             <!-- SIGN OUT -->
             <Button
+                android:id="@+id/btnSignOut"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:layout_marginTop="30dp"
