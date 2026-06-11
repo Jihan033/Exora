@@ -26,6 +26,7 @@ import com.example.exora.auth.SessionManager;
 import com.example.exora.database.DatabaseHelper;
 import com.example.exora.model.EventModel;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -50,6 +51,7 @@ public class UserAgendaActivity extends AppCompatActivity {
     private DatabaseHelper dbHelper;
     private SessionManager sessionManager;
     private ApiService apiService;
+    private String currentUserEmail;
     private String currentUserName;
 
     private Calendar calendar;
@@ -66,6 +68,7 @@ public class UserAgendaActivity extends AppCompatActivity {
 
         dbHelper = new DatabaseHelper(this);
         sessionManager = new SessionManager(this);
+        currentUserEmail = sessionManager.getUserEmail();
         currentUserName = sessionManager.getUserName();
         apiService = RetrofitClient.getApiService();
         
@@ -158,17 +161,20 @@ public class UserAgendaActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        currentUserEmail = sessionManager.getUserEmail();
+        currentUserName = sessionManager.getUserName();
         loadHeaderData();
         fetchEventsFromServer();
     }
 
     private void loadHeaderData() {
-        Cursor cursor = dbHelper.getUser(currentUserName);
+        Cursor cursor = dbHelper.getUserByEmail(currentUserEmail);
         if (cursor != null && cursor.moveToFirst()) {
-            String imageUriStr = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_USER_IMAGE));
-            if (imageUriStr != null && !imageUriStr.isEmpty()) {
-                if (imgHeaderProfile != null) {
-                    imgHeaderProfile.setImageURI(Uri.parse(imageUriStr));
+            String imagePath = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_USER_IMAGE));
+            if (imagePath != null && !imagePath.isEmpty()) {
+                File imgFile = new File(imagePath);
+                if (imgFile.exists() && imgHeaderProfile != null) {
+                    imgHeaderProfile.setImageURI(Uri.fromFile(imgFile));
                 }
             }
             cursor.close();
@@ -183,7 +189,6 @@ public class UserAgendaActivity extends AppCompatActivity {
                     serverEvents = response.body();
                     displayEvents();
                 } else {
-                    Log.e(TAG, "Failed to fetch events from server");
                     serverEvents = dbHelper.getAllEvents();
                     displayEvents();
                 }
@@ -191,7 +196,6 @@ public class UserAgendaActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<EventModel>> call, Throwable t) {
-                Log.e(TAG, "Network error", t);
                 serverEvents = dbHelper.getAllEvents();
                 displayEvents();
             }
@@ -204,14 +208,12 @@ public class UserAgendaActivity extends AppCompatActivity {
         eventListContainer.removeAllViews();
         joinedEventContainer.removeAllViews();
         
-        // Use local DB to check which events are joined by the user
         List<EventModel> joinedEvents = dbHelper.getEventsForUser(currentUserName);
 
         LayoutInflater inflater = LayoutInflater.from(this);
         boolean anyJoinedFound = false;
         boolean anyAvailableFound = false;
 
-        // 1. Load Joined Events for selected date
         for (final EventModel event : joinedEvents) {
             if (event.getDate().equals(selectedDate)) {
                 anyJoinedFound = true;
@@ -223,7 +225,6 @@ public class UserAgendaActivity extends AppCompatActivity {
         
         tvMySchedule.setVisibility(anyJoinedFound ? View.VISIBLE : View.GONE);
 
-        // 2. Load Available Events (Not joined yet) for selected date from server list
         for (final EventModel event : serverEvents) {
             if (!event.getDate().equals(selectedDate)) continue;
 
@@ -281,7 +282,7 @@ public class UserAgendaActivity extends AppCompatActivity {
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
                     dbHelper.joinEvent(event.getId(), currentUserName);
-                    Toast.makeText(UserAgendaActivity.this, "Successfully registered for " + event.getName(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(UserAgendaActivity.this, "Successfully registered", Toast.LENGTH_SHORT).show();
                     fetchEventsFromServer();
                 } else {
                     Toast.makeText(UserAgendaActivity.this, "Failed to register", Toast.LENGTH_SHORT).show();
@@ -302,20 +303,20 @@ public class UserAgendaActivity extends AppCompatActivity {
         btnProfile = findViewById(R.id.btnProfile);
 
         btnDashboard.setOnClickListener(v -> {
-            startActivity(new Intent(UserAgendaActivity.this, UserDashboardActivity.class));
+            startActivity(new Intent(this, UserDashboardActivity.class));
             overridePendingTransition(R.transition.slide_in_left, R.transition.slide_out_right);
             finish();
         });
 
         btnClub.setOnClickListener(v -> {
-            startActivity(new Intent(UserAgendaActivity.this, UserClubActivity.class));
+            startActivity(new Intent(this, UserClubActivity.class));
             overridePendingTransition(R.transition.slide_in_left, R.transition.slide_out_right);
             finish();
         });
 
         btnProfile.setOnClickListener(v -> {
-            startActivity(new Intent(UserAgendaActivity.this, UserProfileActivity.class));
-            overridePendingTransition(R.transition.slide_in_left, R.transition.slide_out_right);
+            startActivity(new Intent(this, UserProfileActivity.class));
+            overridePendingTransition(R.transition.slide_in_right, R.transition.slide_out_left);
             finish();
         });
     }

@@ -23,7 +23,8 @@
             android:background="@drawable/rounded_bg"
             android:clipToOutline="true"
             android:scaleType="centerCrop"
-            android:src="@drawable/profile"/>
+            android:src="@drawable/profile"
+            android:contentDescription="Profile Header Image"/>
 
         <TextView
             android:layout_width="0dp"
@@ -40,7 +41,8 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/notification"
-            app:tint="#64748B"/>
+            app:tint="#64748B"
+            android:contentDescription="Notifications"/>
     </LinearLayout>
 
     <!-- CONTENT -->
@@ -66,7 +68,8 @@
                 android:background="@drawable/rounded_bg"
                 android:clipToOutline="true"
                 android:scaleType="centerCrop"
-                android:src="@drawable/profile"/>
+                android:src="@drawable/profile"
+                android:contentDescription="User Profile Image"/>
 
             <TextView
                 android:id="@+id/tvProfileName"
@@ -74,7 +77,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="14dp"
-                android:text="Alex Chen"
+                android:text="Name"
                 android:textColor="#111827"
                 android:textSize="22sp"
                 android:textStyle="bold"/>
@@ -85,7 +88,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="4dp"
-                android:text="Student ID: 20210801045"
+                android:text="Student ID"
                 android:textColor="#64748B"
                 android:textSize="14sp"/>
 
@@ -97,7 +100,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="16dp"
                 android:gravity="center"
-                android:text="Active student interested in Robotics and Software Development. Always looking for new learning opportunities."
+                android:text=""
                 android:textColor="#4B5563"
                 android:textSize="14sp"/>
 
@@ -156,7 +159,8 @@
                             android:background="#F1F5F9"
                             android:padding="10dp"
                             android:src="@drawable/notification"
-                            app:tint="#64748B"/>
+                            app:tint="#64748B"
+                            android:contentDescription="Notification Icon"/>
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -209,7 +213,8 @@
                             android:background="#F1F5F9"
                             android:padding="10dp"
                             android:src="@drawable/profilebutton"
-                            app:tint="#64748B"/>
+                            app:tint="#64748B"
+                            android:contentDescription="Edit Profile Icon"/>
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -285,7 +290,8 @@
                 android:layout_width="22dp"
                 android:layout_height="22dp"
                 android:src="@drawable/dashboard"
-                app:tint="#94A3B8"/>
+                app:tint="#94A3B8"
+                android:contentDescription="Dashboard Icon"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -306,7 +312,8 @@
                 android:layout_width="22dp"
                 android:layout_height="22dp"
                 android:src="@drawable/agenda"
-                app:tint="#94A3B8"/>
+                app:tint="#94A3B8"
+                android:contentDescription="Agenda Icon"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -327,7 +334,8 @@
                 android:layout_width="22dp"
                 android:layout_height="22dp"
                 android:src="@drawable/club"
-                app:tint="#94A3B8"/>
+                app:tint="#94A3B8"
+                android:contentDescription="Clubs Icon"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -359,7 +367,8 @@
                         android:layout_width="22dp"
                         android:layout_height="22dp"
                         android:src="@drawable/profilebutton"
-                        app:tint="#2563EB"/>
+                        app:tint="#2563EB"
+                        android:contentDescription="Profile Icon"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

@@ -88,12 +88,27 @@
                             android:clickable="true" />
                     </com.google.android.material.textfield.TextInputLayout>
 
+                    <!-- Tambahan field untuk Posting Deskripsi -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:hint="Recruitment Description / Post Message"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etRecDescription"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:minLines="3"
+                            android:gravity="top" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
                     <Button
                         android:id="@+id/btnSaveRecSettings"
                         android:layout_width="match_parent"
                         android:layout_height="56dp"
                         android:layout_marginTop="24dp"
-                        android:text="Save Settings"
+                        android:text="Post &amp; Save Settings"
                         android:textAllCaps="false"
                         android:backgroundTint="#0058BE" />
 
