@@ -15,21 +15,33 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.exora.R;
+import com.example.exora.auth.ApiService;
+import com.example.exora.auth.RetrofitClient;
+import com.example.exora.auth.SessionManager;
 import com.example.exora.database.DatabaseHelper;
 import com.example.exora.model.EventModel;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AdminManageEventActivity extends AppCompatActivity {
 
     private TextInputEditText etName, etDate, etTime, etLocation, etDescription;
-    private Button btnSave, btnDelete;
+    private Button btnSave, btnDelete, btnCloseRegistration;
     private LinearLayout participantsContainer;
     private TextView tvAttendanceTitle, tvNoParticipants;
     private DatabaseHelper dbHelper;
+    private ApiService apiService;
+    private SessionManager sessionManager;
     private int eventId = -1;
+    private String currentStatus = "Upcoming";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +49,8 @@ public class AdminManageEventActivity extends AppCompatActivity {
         setContentView(R.layout.activity_admin_manage_event);
 
         dbHelper = new DatabaseHelper(this);
+        apiService = RetrofitClient.getApiService();
+        sessionManager = new SessionManager(this);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -52,6 +66,7 @@ public class AdminManageEventActivity extends AppCompatActivity {
         etDescription = findViewById(R.id.etEventDescription);
         btnSave = findViewById(R.id.btnUpdateEvent);
         btnDelete = findViewById(R.id.btnCancelEvent);
+        btnCloseRegistration = findViewById(R.id.btnCloseRegistration);
         
         participantsContainer = findViewById(R.id.participantsContainer);
         tvAttendanceTitle = findViewById(R.id.tvAttendanceTitle);
@@ -80,6 +95,8 @@ public class AdminManageEventActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        btnCloseRegistration.setOnClickListener(v -> closeRegistration());
     }
 
     private void loadEventData(int id) {
@@ -90,10 +107,72 @@ public class AdminManageEventActivity extends AppCompatActivity {
             etTime.setText(event.getTime());
             etLocation.setText(event.getLocation());
             etDescription.setText(event.getDescription());
+            currentStatus = event.getStatus();
+
+            if ("Closed".equalsIgnoreCase(currentStatus)) {
+                btnCloseRegistration.setVisibility(View.GONE);
+            } else {
+                btnCloseRegistration.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+    private void closeRegistration() {
+        if (eventId != -1) {
+            EventModel event = dbHelper.getEvent(eventId);
+            if (event != null) {
+                dbHelper.updateEvent(new EventModel(eventId, event.getName(), event.getDate(), 
+                        event.getTime(), event.getLocation(), event.getDescription(), "Closed"));
+                Toast.makeText(this, "Pendaftaran ditutup", Toast.LENGTH_SHORT).show();
+                loadEventData(eventId);
+            }
         }
     }
 
     private void loadParticipants(int id) {
+        String token = "Bearer " + sessionManager.getToken();
+        apiService.getEventParticipants(token, id).enqueue(new Callback<List<Map<String, String>>>() {
+            @Override
+            public void onResponse(Call<List<Map<String, String>>> call, Response<List<Map<String, String>>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    displayParticipants(response.body());
+                } else {
+                    loadParticipantsFromLocal(id);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Map<String, String>>> call, Throwable t) {
+                loadParticipantsFromLocal(id);
+            }
+        });
+    }
+
+    private void displayParticipants(List<Map<String, String>> participants) {
+        participantsContainer.removeAllViews();
+        int count = participants.size();
+        
+        if (count > 0) {
+            tvNoParticipants.setVisibility(View.GONE);
+            LayoutInflater inflater = LayoutInflater.from(this);
+            for (Map<String, String> p : participants) {
+                String name = p.get("name");
+                String status = p.get("status");
+                
+                View itemView = inflater.inflate(R.layout.item_event_participant, participantsContainer, false);
+                ((TextView) itemView.findViewById(R.id.tvParticipantName)).setText(name);
+                ((TextView) itemView.findViewById(R.id.tvParticipantStatus)).setText(status != null ? status : "Joined");
+                
+                participantsContainer.addView(itemView);
+            }
+        } else {
+            tvNoParticipants.setVisibility(View.VISIBLE);
+        }
+        
+        tvAttendanceTitle.setText("Attendance Preview (" + count + " Students)");
+    }
+
+    private void loadParticipantsFromLocal(int id) {
         participantsContainer.removeAllViews();
         Cursor cursor = dbHelper.getEventParticipants(id);
         
@@ -161,7 +240,7 @@ public class AdminManageEventActivity extends AppCompatActivity {
             return;
         }
 
-        dbHelper.updateEvent(new EventModel(eventId, name, date, time, location, desc, "Upcoming"));
+        dbHelper.updateEvent(new EventModel(eventId, name, date, time, location, desc, currentStatus));
         Toast.makeText(this, "Event updated", Toast.LENGTH_SHORT).show();
         finish();
     }

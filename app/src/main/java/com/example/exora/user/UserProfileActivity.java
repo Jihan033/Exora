@@ -23,7 +23,7 @@ import java.io.File;
 
 public class UserProfileActivity extends AppCompatActivity {
 
-    private LinearLayout btnDashboard, btnAgenda, btnClub, btnProfile;
+    private LinearLayout btnDashboard, btnAgenda, btnClub, btnProfile, btnAboutUs;
     private LinearLayout joinedClubsContainer;
     private TextView tvProfileName, tvStudentId, tvBio;
     private ImageView imgUserProfile, imgHeaderProfile;
@@ -51,6 +51,7 @@ public class UserProfileActivity extends AppCompatActivity {
         btnAgenda = findViewById(R.id.btnAgenda);
         btnClub = findViewById(R.id.btnClub);
         btnProfile = findViewById(R.id.btnProfile);
+        btnAboutUs = findViewById(R.id.btnAboutUs);
         joinedClubsContainer = findViewById(R.id.joinedClubsContainer);
 
         setupNavigation();
@@ -70,6 +71,13 @@ public class UserProfileActivity extends AppCompatActivity {
             Intent intent = new Intent(this, EditProfileActivity.class);
             startActivity(intent);
         });
+
+        if (btnAboutUs != null) {
+            btnAboutUs.setOnClickListener(v -> {
+                Intent intent = new Intent(this, AboutUsActivity.class);
+                startActivity(intent);
+            });
+        }
     }
 
     @Override

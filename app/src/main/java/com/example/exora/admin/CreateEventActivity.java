@@ -11,6 +11,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.exora.R;
+import com.example.exora.auth.ApiService;
+import com.example.exora.auth.RetrofitClient;
+import com.example.exora.auth.SessionManager;
 import com.example.exora.database.DatabaseHelper;
 import com.example.exora.model.EventModel;
 import com.google.android.material.textfield.TextInputEditText;
@@ -18,12 +21,18 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.util.Calendar;
 import java.util.Locale;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class CreateEventActivity extends AppCompatActivity {
 
     private TextInputEditText etName, etDate, etTime, etLocation, etDescription;
     private Spinner spStatus;
     private Button btnSubmit;
     private DatabaseHelper dbHelper;
+    private ApiService apiService;
+    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +40,8 @@ public class CreateEventActivity extends AppCompatActivity {
         setContentView(R.layout.activity_admin_create_event);
 
         dbHelper = new DatabaseHelper(this);
+        apiService = RetrofitClient.getApiService();
+        sessionManager = new SessionManager(this);
 
         Toolbar toolbar = findViewById(R.id.toolbarCreate);
         setSupportActionBar(toolbar);
@@ -67,13 +78,30 @@ public class CreateEventActivity extends AppCompatActivity {
                 return;
             }
 
-            long id = dbHelper.addEvent(new EventModel(name, date, time, location, desc, status));
-            if (id > 0) {
-                Toast.makeText(this, "Event created successfully!", Toast.LENGTH_SHORT).show();
-                finish();
-            } else {
-                Toast.makeText(this, "Failed to create event", Toast.LENGTH_SHORT).show();
-            }
+            EventModel newEvent = new EventModel(name, date, time, location, desc, status);
+            
+            // 1. Simpan ke database lokal
+            dbHelper.addEvent(newEvent);
+
+            // 2. Simpan ke server
+            String token = "Bearer " + sessionManager.getToken();
+            apiService.createEvent(token, newEvent).enqueue(new Callback<EventModel>() {
+                @Override
+                public void onResponse(Call<EventModel> call, Response<EventModel> response) {
+                    if (response.isSuccessful()) {
+                        Toast.makeText(CreateEventActivity.this, "Event created and synced to server!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(CreateEventActivity.this, "Saved locally, but failed to sync to server", Toast.LENGTH_SHORT).show();
+                    }
+                    finish();
+                }
+
+                @Override
+                public void onFailure(Call<EventModel> call, Throwable t) {
+                    Toast.makeText(CreateEventActivity.this, "Network error, saved locally only", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            });
         });
     }
 

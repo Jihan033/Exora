@@ -21,7 +21,8 @@ public class AdminProfileActivity extends AppCompatActivity {
             btnAgenda,
             btnClub,
             btnProfile,
-            btnPrivacyProfile;
+            btnPrivacyProfile,
+            btnManageAboutUs;
     ImageView btnAdminNotification;
     Button btnSignOut;
     TextView tvAdminName;
@@ -39,13 +40,11 @@ public class AdminProfileActivity extends AppCompatActivity {
         btnClub = findViewById(R.id.btnClub);
         btnProfile = findViewById(R.id.btnProfile);
         btnPrivacyProfile = findViewById(R.id.btnPrivacyProfile);
+        btnManageAboutUs = findViewById(R.id.btnManageAboutUs);
         btnAdminNotification = findViewById(R.id.btnAdminNotification);
         
-        // Find Sign Out Button - in layout it's a Button without ID, so I should add ID or find it by type if it's the only one
-        // Looking at activity_admin_profile.xml, the Sign Out button is at the end.
-        // It doesn't have an ID. I will update the XML to add an ID.
         btnSignOut = findViewById(R.id.btnSignOut);
-        tvAdminName = findViewById(R.id.tvAdminName); // Also update name in UI
+        tvAdminName = findViewById(R.id.tvAdminName);
 
         if (tvAdminName != null) {
             tvAdminName.setText(sessionManager.getUserName());
@@ -53,61 +52,38 @@ public class AdminProfileActivity extends AppCompatActivity {
 
         // Dashboard
         btnDashboard.setOnClickListener(v -> {
-            startActivity(new Intent(
-                    AdminProfileActivity.this,
-                    AdminDashboardActivity.class
-            ));
-
-            overridePendingTransition(
-                    R.transition.slide_in_left,
-                    R.transition.slide_out_right
-            );
-
+            startActivity(new Intent(AdminProfileActivity.this, AdminDashboardActivity.class));
+            overridePendingTransition(R.transition.slide_in_left, R.transition.slide_out_right);
             finish();
         });
 
         // Agenda
         btnAgenda.setOnClickListener(v -> {
-            startActivity(new Intent(
-                    AdminProfileActivity.this,
-                    AdminAgendaActivity.class
-            ));
-
-            overridePendingTransition(
-                    R.transition.slide_in_left,
-                    R.transition.slide_out_right
-            );
-
+            startActivity(new Intent(AdminProfileActivity.this, AdminAgendaActivity.class));
+            overridePendingTransition(R.transition.slide_in_left, R.transition.slide_out_right);
             finish();
         });
 
         // Clubs
         btnClub.setOnClickListener(v -> {
-            startActivity(new Intent(
-                    AdminProfileActivity.this,
-                    AdminClubActivity.class
-            ));
-
-            overridePendingTransition(
-                    R.transition.slide_in_left,
-                    R.transition.slide_out_right
-            );
-
+            startActivity(new Intent(AdminProfileActivity.this, AdminClubActivity.class));
+            overridePendingTransition(R.transition.slide_in_left, R.transition.slide_out_right);
             finish();
         });
 
         // Privacy Profile
         btnPrivacyProfile.setOnClickListener(v -> {
-            startActivity(new Intent(
-                    AdminProfileActivity.this,
-                    AdminPrivacyProfileActivity.class
-            ));
-
-            overridePendingTransition(
-                    R.transition.slide_in_right,
-                    R.transition.slide_out_left
-            );
+            startActivity(new Intent(AdminProfileActivity.this, AdminPrivacyProfileActivity.class));
+            overridePendingTransition(R.transition.slide_in_right, R.transition.slide_out_left);
         });
+
+        // Manage About Us
+        if (btnManageAboutUs != null) {
+            btnManageAboutUs.setOnClickListener(v -> {
+                startActivity(new Intent(AdminProfileActivity.this, AdminManageAboutUsActivity.class));
+                overridePendingTransition(R.transition.slide_in_right, R.transition.slide_out_left);
+            });
+        }
 
         if (btnAdminNotification != null) {
             btnAdminNotification.setOnClickListener(v -> {

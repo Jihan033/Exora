@@ -4,7 +4,9 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
-    private static final String BASE_URL = "https://api.exora.org/"; // Placeholder URL
+    // Gunakan IP Laptop (192.168.1.11) agar HP Fisik bisa mengakses server Node.js
+    // Pastikan HP dan Laptop terhubung ke WiFi yang sama
+    private static final String BASE_URL = "http://192.168.1.11:3000/";
     private static Retrofit retrofit = null;
 
     public static ApiService getApiService() {

@@ -1,5 +1,6 @@
 package com.example.exora.user;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -25,6 +26,7 @@ import com.example.exora.auth.RetrofitClient;
 import com.example.exora.auth.SessionManager;
 import com.example.exora.database.DatabaseHelper;
 import com.example.exora.model.EventModel;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -139,18 +141,21 @@ public class UserAgendaActivity extends AppCompatActivity {
             
             if (dateStr.equals(selectedDate)) {
                 dayLayouts[i].setBackgroundResource(R.drawable.role_selected);
-                ((TextView)dayLayouts[i].getChildAt(0)).setTextColor(ContextCompat.getColor(this, android.R.color.white));
+                if (dayLayouts[i].getChildCount() > 0 && dayLayouts[i].getChildAt(0) instanceof TextView) {
+                    ((TextView)dayLayouts[i].getChildAt(0)).setTextColor(ContextCompat.getColor(this, android.R.color.white));
+                }
                 dayTextViews[i].setTextColor(ContextCompat.getColor(this, android.R.color.white));
             } else {
                 dayLayouts[i].setBackgroundResource(0);
-                ((TextView)dayLayouts[i].getChildAt(0)).setTextColor(ContextCompat.getColor(this, android.R.color.black));
+                if (dayLayouts[i].getChildCount() > 0 && dayLayouts[i].getChildAt(0) instanceof TextView) {
+                    ((TextView)dayLayouts[i].getChildAt(0)).setTextColor(ContextCompat.getColor(this, android.R.color.black));
+                }
                 dayTextViews[i].setTextColor(ContextCompat.getColor(this, android.R.color.black));
             }
 
             dayLayouts[i].setOnClickListener(v -> {
                 selectedDate = dateStr;
                 updateCalendarUI();
-                fetchEventsFromServer();
             });
 
             tempCal.add(Calendar.DAY_OF_MONTH, 1);
@@ -185,13 +190,12 @@ public class UserAgendaActivity extends AppCompatActivity {
         apiService.getEvents().enqueue(new Callback<List<EventModel>>() {
             @Override
             public void onResponse(Call<List<EventModel>> call, Response<List<EventModel>> response) {
-                if (response.isSuccessful() && response.body() != null) {
+                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
                     serverEvents = response.body();
-                    displayEvents();
                 } else {
                     serverEvents = dbHelper.getAllEvents();
-                    displayEvents();
                 }
+                displayEvents();
             }
 
             @Override
@@ -266,32 +270,76 @@ public class UserAgendaActivity extends AppCompatActivity {
         tvStatus.setText(event.getStatus());
         
         if (isJoined) {
-            btnAction.setText("Registered");
+            btnAction.setText("Terdaftar");
+            btnAction.setEnabled(false);
+            btnAction.setBackgroundTintList(ContextCompat.getColorStateList(this, android.R.color.darker_gray));
+        } else if ("Closed".equalsIgnoreCase(event.getStatus())) {
+            btnAction.setText("Pendaftaran Ditutup");
             btnAction.setEnabled(false);
             btnAction.setBackgroundTintList(ContextCompat.getColorStateList(this, android.R.color.darker_gray));
         } else {
-            btnAction.setText("Join Event");
-            btnAction.setOnClickListener(v -> joinEvent(event));
+            btnAction.setText("Daftar Sekarang");
+            btnAction.setEnabled(true);
+            btnAction.setOnClickListener(v -> showRegistrationDialog(event));
         }
     }
 
-    private void joinEvent(EventModel event) {
-        String token = "Bearer " + sessionManager.getUserName();
-        apiService.joinEvent(token, new EventJoinRequest(event.getId())).enqueue(new Callback<Void>() {
+    private void showRegistrationDialog(EventModel event) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_event_registration, null);
+        builder.setView(dialogView);
+
+        TextView tvTitle = dialogView.findViewById(R.id.tvDialogTitle);
+        TextInputEditText etStudentName = dialogView.findViewById(R.id.etStudentName);
+        TextInputEditText etStudentId = dialogView.findViewById(R.id.etStudentId);
+        Button btnConfirm = dialogView.findViewById(R.id.btnConfirmRegistration);
+
+        tvTitle.setText("Pendaftaran: " + event.getName());
+        etStudentName.setText(currentUserName);
+
+        AlertDialog dialog = builder.create();
+
+        btnConfirm.setOnClickListener(v -> {
+            String name = etStudentName.getText().toString().trim();
+            String idNumber = etStudentId.getText().toString().trim();
+
+            if (name.isEmpty() || idNumber.isEmpty()) {
+                Toast.makeText(this, "Harap isi semua data", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            dialog.dismiss();
+            processJoinEvent(event, name, idNumber);
+        });
+
+        dialog.show();
+    }
+
+    private void processJoinEvent(EventModel event, String studentName, String studentId) {
+        String token = "Bearer " + sessionManager.getToken();
+        apiService.joinEvent(token, new EventJoinRequest(event.getId(), currentUserEmail, studentName, studentId)).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
                     dbHelper.joinEvent(event.getId(), currentUserName);
-                    Toast.makeText(UserAgendaActivity.this, "Successfully registered", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(UserAgendaActivity.this, "Berhasil mendaftar event!", Toast.LENGTH_SHORT).show();
                     fetchEventsFromServer();
                 } else {
-                    Toast.makeText(UserAgendaActivity.this, "Failed to register", Toast.LENGTH_SHORT).show();
+                    // DIAGNOSA ERROR: Tampilkan kode error HTTP
+                    String msg = "Gagal mendaftar (Error: " + response.code() + ")";
+                    if (response.code() == 401) msg = "Sesi habis, silakan login ulang (401)";
+                    else if (response.code() == 400) msg = "Data tidak valid / Sudah terdaftar (400)";
+                    
+                    Log.e(TAG, "Registration Failed: " + response.code());
+                    Toast.makeText(UserAgendaActivity.this, msg, Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                Toast.makeText(UserAgendaActivity.this, "Network error", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Network Error: " + t.getMessage());
+                Toast.makeText(UserAgendaActivity.this, "Kesalahan jaringan: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -304,19 +352,16 @@ public class UserAgendaActivity extends AppCompatActivity {
 
         btnDashboard.setOnClickListener(v -> {
             startActivity(new Intent(this, UserDashboardActivity.class));
-            overridePendingTransition(R.transition.slide_in_left, R.transition.slide_out_right);
             finish();
         });
 
         btnClub.setOnClickListener(v -> {
             startActivity(new Intent(this, UserClubActivity.class));
-            overridePendingTransition(R.transition.slide_in_left, R.transition.slide_out_right);
             finish();
         });
 
         btnProfile.setOnClickListener(v -> {
             startActivity(new Intent(this, UserProfileActivity.class));
-            overridePendingTransition(R.transition.slide_in_right, R.transition.slide_out_left);
             finish();
         });
     }
