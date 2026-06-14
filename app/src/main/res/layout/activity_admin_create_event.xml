@@ -81,8 +81,7 @@
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/etNewDate"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:hint="e.g. Sep 12, 2024" />
+                                android:layout_height="wrap_content" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.textfield.TextInputLayout
@@ -95,8 +94,7 @@
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/etNewTime"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:hint="e.g. 08:00 AM - 10:00 AM" />
+                                android:layout_height="wrap_content" />
                         </com.google.android.material.textfield.TextInputLayout>
                     </LinearLayout>
 

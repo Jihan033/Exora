@@ -144,6 +144,7 @@
 
                 <!-- Divider -->
                 <TextView
+                    android:id="@+id/tvOrContinue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="or continue with"
@@ -153,22 +154,26 @@
 
                 <!-- Social Login -->
                 <LinearLayout
+                    android:id="@+id/llSocialLogin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center"
                     android:layout_marginTop="14dp">
 
-                    <!-- Google -->
+                    <!-- Google Only -->
                     <LinearLayout
                         android:id="@+id/btnGoogle"
-                        android:layout_width="140dp"
+                        android:layout_width="match_parent"
                         android:layout_height="52dp"
                         android:background="@drawable/social_button_bg"
                         android:gravity="center"
                         android:orientation="horizontal"
                         android:paddingStart="16dp"
-                        android:paddingEnd="16dp">
+                        android:paddingEnd="16dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground">
 
                         <ImageView
                             android:layout_width="22dp"
@@ -178,35 +183,8 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:text="Google"
-                            android:textColor="#374151"
-                            android:textSize="15sp"
-                            android:textStyle="bold"/>
-                    </LinearLayout>
-
-                    <!-- Microsoft -->
-                    <LinearLayout
-                        android:id="@+id/btnMicrosoft"
-                        android:layout_width="140dp"
-                        android:layout_height="52dp"
-                        android:layout_marginStart="12dp"
-                        android:background="@drawable/social_button_bg"
-                        android:gravity="center"
-                        android:orientation="horizontal"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="16dp">
-
-                        <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:src="@drawable/microsoft"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:text="Microsoft"
+                            android:layout_marginStart="12dp"
+                            android:text="Sign in with Google"
                             android:textColor="#374151"
                             android:textSize="15sp"
                             android:textStyle="bold"/>
@@ -219,12 +197,14 @@
 
         <!-- Register -->
         <TextView
+            android:id="@+id/tvRegisterLink"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="New to Exora? Join Organization"
             android:textColor="#006C49"
             android:textStyle="bold"
-            android:layout_marginTop="20dp"/>
+            android:layout_marginTop="20dp"
+            android:paddingBottom="20dp"/>
     </LinearLayout>
 
 </ScrollView>

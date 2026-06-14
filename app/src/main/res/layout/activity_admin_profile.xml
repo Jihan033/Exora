@@ -67,11 +67,12 @@
 
             <!-- NAME -->
             <TextView
+                android:id="@+id/tvAdminName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="14dp"
-                android:text="Jihan"
+                android:text="Admin"
                 android:textColor="#111827"
                 android:textSize="22sp"
                 android:textStyle="bold"/>
@@ -298,12 +299,71 @@
                             android:layout_height="wrap_content"/>
                     </LinearLayout>
 
+                    <!-- Divider -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:background="#E5E7EB"/>
+
+                    <!-- Manage About Us -->
+                    <LinearLayout
+                        android:id="@+id/btnManageAboutUs"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground">
+
+                        <ImageView
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
+                            android:background="#F3F4F6"
+                            android:padding="10dp"
+                            android:src="@drawable/ic_info"
+                            app:tint="#64748B"/>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="14dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:text="Kelola About Us"
+                                android:textStyle="bold"
+                                android:textSize="15sp"
+                                android:textColor="#111827"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+
+                            <TextView
+                                android:text="Edit deskripsi aplikasi"
+                                android:textColor="#6B7280"
+                                android:textSize="13sp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+                        </LinearLayout>
+
+                        <TextView
+                            android:text="›"
+                            android:textSize="26sp"
+                            android:textColor="#CBD5E1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
 
             <!-- SIGN OUT -->
             <Button
+                android:id="@+id/btnSignOut"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:layout_marginTop="30dp"

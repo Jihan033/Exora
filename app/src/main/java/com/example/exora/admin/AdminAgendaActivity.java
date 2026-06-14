@@ -121,11 +121,15 @@ public class AdminAgendaActivity extends AppCompatActivity {
             
             if (dateStr.equals(selectedDate)) {
                 dayLayouts[i].setBackgroundResource(R.drawable.role_selected);
-                ((TextView)dayLayouts[i].getChildAt(0)).setTextColor(ContextCompat.getColor(this, android.R.color.white));
+                if (dayLayouts[i].getChildCount() > 0 && dayLayouts[i].getChildAt(0) instanceof TextView) {
+                    ((TextView)dayLayouts[i].getChildAt(0)).setTextColor(ContextCompat.getColor(this, android.R.color.white));
+                }
                 dayTextViews[i].setTextColor(ContextCompat.getColor(this, android.R.color.white));
             } else {
                 dayLayouts[i].setBackgroundResource(0);
-                ((TextView)dayLayouts[i].getChildAt(0)).setTextColor(ContextCompat.getColor(this, R.color.grayText));
+                if (dayLayouts[i].getChildCount() > 0 && dayLayouts[i].getChildAt(0) instanceof TextView) {
+                    ((TextView)dayLayouts[i].getChildAt(0)).setTextColor(ContextCompat.getColor(this, R.color.grayText));
+                }
                 dayTextViews[i].setTextColor(ContextCompat.getColor(this, R.color.darkText));
             }
 
@@ -171,10 +175,11 @@ public class AdminAgendaActivity extends AppCompatActivity {
                 tvName.setText(event.getName());
                 tvLocation.setText("📍 " + event.getLocation());
                 tvStatus.setText(event.getStatus());
-
+                btnManage.setText("Manage Event");
                 btnManage.setOnClickListener(v -> {
                     Intent intent = new Intent(AdminAgendaActivity.this, AdminManageEventActivity.class);
                     intent.putExtra("EVENT_ID", event.getId());
+                    intent.putExtra("EVENT_NAME", event.getName());
                     startActivity(intent);
                     overridePendingTransition(R.transition.slide_in_right, R.transition.slide_out_left);
                 });

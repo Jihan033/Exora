@@ -36,7 +36,6 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
         dbHelper = new DatabaseHelper(this);
 
-        // UI References
         btnDashboard = findViewById(R.id.btnDashboard);
         btnAgenda = findViewById(R.id.btnAgenda);
         btnClub = findViewById(R.id.btnClub);
@@ -63,8 +62,6 @@ public class AdminDashboardActivity extends AppCompatActivity {
         Cursor cursor = dbHelper.getUnreadNotifications("ADMIN");
         if (cursor != null && cursor.getCount() > 0) {
             adminNotifBadge.setVisibility(View.VISIBLE);
-            
-            // Update Recent Activity with the latest join notification
             if (cursor.moveToLast()) {
                 String title = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_NOTIF_TITLE));
                 String message = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_NOTIF_MESSAGE));
@@ -79,72 +76,30 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
     private void refreshDashboardData() {
         List<EventModel> events = dbHelper.getAllEvents();
-        
-        loadUpcomingHighlights(events);
-        loadAllAgendas(events);
-        // Default recent activity if no new notifications
-        if (adminNotifBadge.getVisibility() == View.GONE) {
-            updateActiveRecentActivity(events);
-        }
-    }
-
-    private void loadUpcomingHighlights(List<EventModel> events) {
         dashEventContainer.removeAllViews();
+        allAgendasContainer.removeAllViews();
+        
         LayoutInflater inflater = LayoutInflater.from(this);
 
         for (EventModel event : events) {
+            // Highlights
             if (!event.getStatus().equalsIgnoreCase("Closed")) {
                 View cardView = inflater.inflate(R.layout.item_admin_dashboard_event, dashEventContainer, false);
                 ((TextView) cardView.findViewById(R.id.tvDashTime)).setText(event.getTime());
                 ((TextView) cardView.findViewById(R.id.tvDashName)).setText(event.getName());
                 ((TextView) cardView.findViewById(R.id.tvDashLocation)).setText(event.getLocation());
-                
                 cardView.setOnClickListener(v -> openManageEvent(event.getId()));
                 dashEventContainer.addView(cardView);
             }
-        }
-    }
 
-    private void loadAllAgendas(List<EventModel> events) {
-        allAgendasContainer.removeAllViews();
-        LayoutInflater inflater = LayoutInflater.from(this);
-
-        for (EventModel event : events) {
-            View cardView = inflater.inflate(R.layout.item_admin_event_card, allAgendasContainer, false);
-            cardView.findViewById(R.id.btnManage).setOnClickListener(v -> openManageEvent(event.getId()));
-
-            ((TextView) cardView.findViewById(R.id.tvTimeRange)).setText(event.getTime());
-            ((TextView) cardView.findViewById(R.id.tvEventName)).setText(event.getName());
-            ((TextView) cardView.findViewById(R.id.tvLocation)).setText("📍 " + event.getLocation());
-            ((TextView) cardView.findViewById(R.id.tvStatus)).setText(event.getStatus());
-
-            allAgendasContainer.addView(cardView);
-        }
-    }
-
-    private void updateActiveRecentActivity(List<EventModel> events) {
-        EventModel priorityEvent = null;
-        for (EventModel e : events) {
-            if (e.getStatus().equalsIgnoreCase("Ongoing")) {
-                priorityEvent = e;
-                break;
-            }
-        }
-        if (priorityEvent == null) {
-            for (EventModel e : events) {
-                if (e.getStatus().equalsIgnoreCase("Registration Open")) {
-                    priorityEvent = e;
-                    break;
-                }
-            }
-        }
-
-        if (priorityEvent != null) {
-            tvRecentActivityTitle.setText("Active: " + priorityEvent.getName());
-            tvRecentActivityDesc.setText(priorityEvent.getStatus() + " | " + priorityEvent.getLocation());
-        } else {
-            tvRecentActivityTitle.setText("No Active Events");
-            tvRecentActivityDesc.setText("Stay tuned for new updates.");
+            // All Agendas
+            View eventCard = inflater.inflate(R.layout.item_admin_event_card, allAgendasContainer, false);
+            ((TextView) eventCard.findViewById(R.id.tvEventName)).setText(event.getName());
+            ((TextView) eventCard.findViewById(R.id.tvTimeRange)).setText(event.getTime());
+            ((TextView) eventCard.findViewById(R.id.tvLocation)).setText(event.getLocation());
+            ((TextView) eventCard.findViewById(R.id.tvStatus)).setText(event.getStatus());
+            eventCard.findViewById(R.id.btnManage).setOnClickListener(v -> openManageEvent(event.getId()));
+            allAgendasContainer.addView(eventCard);
         }
     }
 
@@ -152,37 +107,16 @@ public class AdminDashboardActivity extends AppCompatActivity {
         Intent intent = new Intent(this, AdminManageEventActivity.class);
         intent.putExtra("EVENT_ID", eventId);
         startActivity(intent);
-        overridePendingTransition(R.transition.slide_in_right, R.transition.slide_out_left);
     }
 
     private void setupNavigation() {
-        btnDashboard.setOnClickListener(v -> {});
-
-        btnAgenda.setOnClickListener(v -> {
-            startActivity(new Intent(this, AdminAgendaActivity.class));
-            overridePendingTransition(R.transition.slide_in_right, R.transition.slide_out_left);
-        });
-
-        btnClub.setOnClickListener(v -> {
-            startActivity(new Intent(this, AdminClubActivity.class));
-            overridePendingTransition(R.transition.slide_in_right, R.transition.slide_out_left);
-        });
-
-        btnProfile.setOnClickListener(v -> {
-            startActivity(new Intent(this, AdminProfileActivity.class));
-            overridePendingTransition(R.transition.slide_in_right, R.transition.slide_out_left);
-        });
-
-        btnViewCalendar.setOnClickListener(v -> {
-            startActivity(new Intent(this, AdminAgendaActivity.class));
-            overridePendingTransition(R.transition.slide_in_right, R.transition.slide_out_left);
-        });
-
+        btnAgenda.setOnClickListener(v -> startActivity(new Intent(this, AdminAgendaActivity.class)));
+        btnClub.setOnClickListener(v -> startActivity(new Intent(this, AdminClubActivity.class)));
+        btnProfile.setOnClickListener(v -> startActivity(new Intent(this, AdminProfileActivity.class)));
         btnAdminNotification.setOnClickListener(v -> {
             Intent intent = new Intent(this, NotificationActivity.class);
             intent.putExtra("TARGET_TYPE", "ADMIN");
             startActivity(intent);
-            overridePendingTransition(R.transition.slide_in_right, R.transition.slide_out_left);
         });
     }
 }

@@ -25,6 +25,7 @@ public class AdminManageRecruitmentActivity extends AppCompatActivity {
     private TextInputEditText etDeadline;
     private Button btnSave;
     private DatabaseHelper dbHelper;
+    private String clubName = "Robotics Club"; // Default, idealnya dikirim dari activity sebelumnya
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +50,6 @@ public class AdminManageRecruitmentActivity extends AppCompatActivity {
         loadCurrentConfig();
 
         etDeadline.setOnClickListener(v -> showDatePicker());
-
         btnSave.setOnClickListener(v -> saveSettings());
     }
 
@@ -93,8 +93,21 @@ public class AdminManageRecruitmentActivity extends AppCompatActivity {
             return;
         }
 
+        // Simpan status rekrutmen
         dbHelper.updateRecruitmentStatus(status, deadline);
-        Toast.makeText(this, "Settings saved successfully", Toast.LENGTH_SHORT).show();
+
+        // FITUR PUSH/POSTING: Jika status OPEN, buat notifikasi untuk semua user
+        if (status.equals("OPEN")) {
+            dbHelper.addNotification(
+                    "New Recruitment Open!",
+                    clubName + " is now accepting new members until " + deadline + ". Apply now!",
+                    "USER"
+            );
+            Toast.makeText(this, "Recruitment posted to all students!", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "Recruitment settings updated", Toast.LENGTH_SHORT).show();
+        }
+
         finish();
     }
 }

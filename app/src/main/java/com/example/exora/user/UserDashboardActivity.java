@@ -1,8 +1,6 @@
 package com.example.exora.user;
 
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,179 +10,146 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 
 import com.example.exora.NotificationActivity;
 import com.example.exora.R;
-import com.example.exora.database.DatabaseHelper;
+import com.example.exora.auth.ApiService;
+import com.example.exora.auth.RetrofitClient;
+import com.example.exora.auth.SessionManager;
 import com.example.exora.model.EventModel;
 
+import java.util.Collections;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class UserDashboardActivity extends AppCompatActivity {
 
-    private LinearLayout btnDashboard, btnAgendaNav, btnClubNav, btnProfileNav;
-    private CardView btnJoinClub, btnSchedules;
-    private ImageView btnNotification, imgProfile;
-    private View notifBadge;
-    private TextView btnViewAllEvents, tvWelcomeName;
-    private LinearLayout dashEventContainer, recommendationContainer;
-    private DatabaseHelper dbHelper;
-    private final String currentUserName = "Alex Chen";
+    private LinearLayout dashEventContainer, recommendationContainer, btnDashboard, btnAgenda, btnClub, btnProfile;
+    private TextView tvUserName;
+    private ApiService apiService;
+    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_dashboard);
 
-        dbHelper = new DatabaseHelper(this);
+        sessionManager = new SessionManager(this);
+        apiService = RetrofitClient.getApiService();
 
-        // UI References
-        tvWelcomeName = findViewById(R.id.tvWelcomeName);
-        btnDashboard = findViewById(R.id.btnDashboard);
-        btnAgendaNav = findViewById(R.id.btnAgendaNav);
-        btnClubNav = findViewById(R.id.btnClubNav);
-        btnProfileNav = findViewById(R.id.btnProfileNav);
-        
-        btnJoinClub = findViewById(R.id.btnJoinClub);
-        btnSchedules = findViewById(R.id.btnSchedules);
-        btnNotification = findViewById(R.id.btnNotification);
-        imgProfile = findViewById(R.id.imgProfile);
-        notifBadge = findViewById(R.id.notifBadge);
-        
-        btnViewAllEvents = findViewById(R.id.btnViewAllEvents);
+        tvUserName = findViewById(R.id.tvWelcomeName);
         dashEventContainer = findViewById(R.id.dashEventContainer);
         recommendationContainer = findViewById(R.id.recommendationContainer);
+        btnDashboard = findViewById(R.id.btnDashboard);
+        btnAgenda = findViewById(R.id.btnAgendaNav);
+        btnClub = findViewById(R.id.btnClubNav);
+        btnProfile = findViewById(R.id.btnProfileNav);
+
+        if (tvUserName != null) {
+            tvUserName.setText("Hello, " + sessionManager.getUserName() + "!");
+        }
 
         setupNavigation();
+        fetchEvents();
+
+        findViewById(R.id.btnNotification).setOnClickListener(v -> {
+            Intent intent = new Intent(this, NotificationActivity.class);
+            intent.putExtra("TARGET_TYPE", "USER");
+            startActivity(intent);
+        });
+        
+        findViewById(R.id.btnViewAllEvents).setOnClickListener(v -> {
+            startActivity(new Intent(this, UserAgendaActivity.class));
+        });
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        loadUserData();
-        loadDashboardData();
-        checkNotifications();
-    }
-
-    private void loadUserData() {
-        Cursor cursor = dbHelper.getUser(currentUserName);
-        if (cursor != null && cursor.moveToFirst()) {
-            String name = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_USER_NAME));
-            String imageUriStr = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_USER_IMAGE));
-            
-            tvWelcomeName.setText("Hello, " + name + "!");
-            
-            if (imageUriStr != null && !imageUriStr.isEmpty()) {
-                imgProfile.setImageURI(Uri.parse(imageUriStr));
+    private void fetchEvents() {
+        apiService.getEvents().enqueue(new Callback<List<EventModel>>() {
+            @Override
+            public void onResponse(Call<List<EventModel>> call, Response<List<EventModel>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    displayEvents(response.body());
+                }
             }
-            cursor.close();
-        }
+
+            @Override
+            public void onFailure(Call<List<EventModel>> call, Throwable t) {
+                Toast.makeText(UserDashboardActivity.this, "Gagal memuat agenda", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    private void loadDashboardData() {
-        List<EventModel> events = dbHelper.getAllEvents();
-        loadHotEvents(events);
-        loadRecommendations(events);
-    }
-
-    private void loadHotEvents(List<EventModel> events) {
+    private void displayEvents(List<EventModel> events) {
+        if (dashEventContainer == null || recommendationContainer == null) return;
+        
         dashEventContainer.removeAllViews();
-        LayoutInflater inflater = LayoutInflater.from(this);
-
-        for (EventModel event : events) {
-            if (event.getStatus().equalsIgnoreCase("Registration Open") || event.getStatus().equalsIgnoreCase("Ongoing")) {
-                View cardView = inflater.inflate(R.layout.item_admin_dashboard_event, dashEventContainer, false);
-                ((TextView) cardView.findViewById(R.id.tvDashTime)).setText(event.getTime());
-                ((TextView) cardView.findViewById(R.id.tvDashName)).setText(event.getName());
-                ((TextView) cardView.findViewById(R.id.tvDashLocation)).setText(event.getLocation());
-                
-                cardView.setOnClickListener(v -> {
-                    Toast.makeText(this, "Viewing " + event.getName(), Toast.LENGTH_SHORT).show();
-                });
-                dashEventContainer.addView(cardView);
-            }
-        }
-    }
-
-    private void loadRecommendations(List<EventModel> events) {
         recommendationContainer.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(this);
 
-        int count = 0;
-        for (EventModel event : events) {
-            if (count >= 3) break;
-
-            View cardView = inflater.inflate(R.layout.item_admin_event_card, recommendationContainer, false);
-            View btnAction = cardView.findViewById(R.id.btnManage);
-            if (btnAction instanceof TextView) {
-                ((TextView) btnAction).setText("Join Event");
-            }
-            
-            btnAction.setOnClickListener(v -> {
-                dbHelper.joinEvent(event.getId(), currentUserName);
-                Toast.makeText(this, "Joined " + event.getName(), Toast.LENGTH_SHORT).show();
-                loadDashboardData();
+        // Hot Events (limit to 5 or based on status)
+        for (int i = 0; i < Math.min(events.size(), 5); i++) {
+            EventModel event = events.get(i);
+            View card = inflater.inflate(R.layout.item_admin_dashboard_event, dashEventContainer, false);
+            ((TextView) card.findViewById(R.id.tvDashTime)).setText(event.getTime());
+            ((TextView) card.findViewById(R.id.tvDashName)).setText(event.getName());
+            ((TextView) card.findViewById(R.id.tvDashLocation)).setText(event.getLocation());
+            card.setOnClickListener(v -> {
+                Intent intent = new Intent(this, UserAgendaActivity.class);
+                intent.putExtra("TARGET_DATE", event.getDate());
+                startActivity(intent);
             });
-
-            ((TextView) cardView.findViewById(R.id.tvTimeRange)).setText(event.getTime());
-            ((TextView) cardView.findViewById(R.id.tvEventName)).setText(event.getName());
-            ((TextView) cardView.findViewById(R.id.tvLocation)).setText("📍 " + event.getLocation());
-            ((TextView) cardView.findViewById(R.id.tvStatus)).setText(event.getStatus());
-
-            recommendationContainer.addView(cardView);
-            count++;
+            dashEventContainer.addView(card);
         }
-    }
 
-    private void checkNotifications() {
-        Cursor cursor = dbHelper.getUnreadNotifications("USER");
-        if (cursor != null && cursor.getCount() > 0) {
-            notifBadge.setVisibility(View.VISIBLE);
-            cursor.close();
-        } else {
-            notifBadge.setVisibility(View.GONE);
+        // Recommended (Shuffle or filter)
+        List<EventModel> recommended = new java.util.ArrayList<>(events);
+        Collections.shuffle(recommended);
+        for (int i = 0; i < Math.min(recommended.size(), 3); i++) {
+            EventModel event = recommended.get(i);
+            View card = inflater.inflate(R.layout.item_admin_event_card, recommendationContainer, false);
+            ((TextView) card.findViewById(R.id.tvEventName)).setText(event.getName());
+            ((TextView) card.findViewById(R.id.tvTimeRange)).setText(event.getTime());
+            ((TextView) card.findViewById(R.id.tvLocation)).setText(event.getLocation());
+            ((TextView) card.findViewById(R.id.tvStatus)).setText(event.getStatus());
+            
+            // Hide Manage button for users
+            card.findViewById(R.id.btnManage).setVisibility(View.GONE);
+            
+            card.setOnClickListener(v -> {
+                Intent intent = new Intent(this, UserAgendaActivity.class);
+                intent.putExtra("TARGET_DATE", event.getDate());
+                startActivity(intent);
+            });
+            recommendationContainer.addView(card);
         }
     }
 
     private void setupNavigation() {
-        btnDashboard.setOnClickListener(v -> {}); // Stay here
-
-        btnAgendaNav.setOnClickListener(v -> {
-            startActivity(new Intent(this, UserAgendaActivity.class));
-            overridePendingTransition(R.transition.slide_in_right, R.transition.slide_out_left);
+        if (btnAgenda != null) {
+            btnAgenda.setOnClickListener(v -> {
+                startActivity(new Intent(this, UserAgendaActivity.class));
+            });
+        }
+        if (btnClub != null) {
+            btnClub.setOnClickListener(v -> {
+                startActivity(new Intent(this, UserClubActivity.class));
+            });
+        }
+        if (btnProfile != null) {
+            btnProfile.setOnClickListener(v -> {
+                startActivity(new Intent(this, UserProfileActivity.class));
+            });
+        }
+        
+        findViewById(R.id.btnSchedules).setOnClickListener(v -> {
+             startActivity(new Intent(this, UserAgendaActivity.class));
         });
-
-        btnClubNav.setOnClickListener(v -> {
-            startActivity(new Intent(this, UserClubActivity.class));
-            overridePendingTransition(R.transition.slide_in_right, R.transition.slide_out_left);
-        });
-
-        btnProfileNav.setOnClickListener(v -> {
-            startActivity(new Intent(this, UserProfileActivity.class));
-            overridePendingTransition(R.transition.slide_in_right, R.transition.slide_out_left);
-        });
-
-        btnJoinClub.setOnClickListener(v -> {
-            startActivity(new Intent(this, UserClubActivity.class));
-            overridePendingTransition(R.transition.slide_in_right, R.transition.slide_out_left);
-        });
-
-        btnSchedules.setOnClickListener(v -> {
-            startActivity(new Intent(this, UserAgendaActivity.class));
-            overridePendingTransition(R.transition.slide_in_right, R.transition.slide_out_left);
-        });
-
-        btnNotification.setOnClickListener(v -> {
-            Intent intent = new Intent(this, NotificationActivity.class);
-            intent.putExtra("TARGET_TYPE", "USER");
-            startActivity(intent);
-            overridePendingTransition(R.transition.slide_in_right, R.transition.slide_out_left);
-        });
-
-        btnViewAllEvents.setOnClickListener(v -> {
-            startActivity(new Intent(this, UserAgendaActivity.class));
-            overridePendingTransition(R.transition.slide_in_right, R.transition.slide_out_left);
+        
+        findViewById(R.id.btnJoinClub).setOnClickListener(v -> {
+             startActivity(new Intent(this, UserClubActivity.class));
         });
     }
 }

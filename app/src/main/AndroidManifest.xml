@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -10,68 +12,85 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Exora">
+        android:theme="@style/Theme.Exora"
+        android:usesCleartextTraffic="true">
 
+        <!-- User Activities -->
         <activity
-            android:name=".user.EditProfileActivity"
+            android:name="com.example.exora.user.AboutUsActivity"
             android:exported="false" />
         <activity
-            android:name=".user.UserProfileActivity"
+            android:name="com.example.exora.user.EditProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".user.UserClubDashboardActivity"
+            android:name="com.example.exora.user.UserProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".user.UserClubActivity"
+            android:name="com.example.exora.user.UserClubDashboardActivity"
             android:exported="false" />
         <activity
-            android:name=".NotificationActivity"
+            android:name="com.example.exora.user.UserClubActivity"
             android:exported="false" />
         <activity
-            android:name=".user.UserAgendaActivity"
+            android:name="com.example.exora.user.UserAgendaActivity"
             android:exported="false" />
         <activity
-            android:name=".user.UserDashboardActivity"
+            android:name="com.example.exora.user.UserDashboardActivity"
+            android:exported="false" />
+
+        <!-- Admin Activities -->
+        <activity
+            android:name="com.example.exora.admin.AdminManageAboutUsActivity"
             android:exported="false" />
         <activity
-            android:name=".admin.AdminPrivacyProfileActivity"
+            android:name="com.example.exora.admin.AdminPrivacyProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".admin.AdminManageMemberActivity"
+            android:name="com.example.exora.admin.AdminManageMemberActivity"
             android:exported="false" />
         <activity
-            android:name=".admin.AdminManageRecruitmentActivity"
+            android:name="com.example.exora.admin.AdminManageRecruitmentActivity"
             android:exported="false" />
         <activity
-            android:name=".admin.AdminRecruitmentActivity"
+            android:name="com.example.exora.admin.AdminRecruitmentActivity"
             android:exported="false" />
         <activity
-            android:name=".admin.CreateEventActivity"
+            android:name="com.example.exora.admin.CreateEventActivity"
             android:exported="false" />
         <activity
-            android:name=".admin.AdminManageEventActivity"
+            android:name="com.example.exora.admin.AdminManageEventActivity"
             android:exported="false" />
         <activity
-            android:name=".admin.AdminProfileActivity"
+            android:name="com.example.exora.admin.AdminProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".admin.AdminClubActivity"
+            android:name="com.example.exora.admin.AdminClubActivity"
             android:exported="false" />
         <activity
-            android:name=".admin.AdminAgendaActivity"
+            android:name="com.example.exora.admin.AdminAgendaActivity"
             android:exported="false" />
         <activity
-            android:name=".admin.AdminDashboardActivity"
+            android:name="com.example.exora.admin.AdminDashboardActivity"
+            android:exported="false" />
+
+        <!-- Auth and Main -->
+        <activity
+            android:name="com.example.exora.NotificationActivity"
             android:exported="false" />
         <activity
-            android:name=".auth.LoginActivity"
+            android:name="com.example.exora.auth.ForgotPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name="com.example.exora.auth.RegisterActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.exora.auth.LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.exora.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
